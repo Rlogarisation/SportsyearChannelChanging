@@ -7,11 +7,17 @@ Repository for MMAN4020 SportsYear Thesis Project
 3. pip install -r requirements.txt
 4. python app.py
 
-## Official API Docs
+## IR Controller Docs
+https://github.com/mdhiggins/ESP8266-HTTP-IR-Blaster
+
+## Official Smart TV API Docs
 #### Sony
 https://pro-bravia.sony.net/develop/index.html
 
 ## [Un-Official] Existing Github Repo's for Remote Control
+#### LG
+- https://github.com/klattimer/LGWebOSRemote [Python]
+- https://github.com/supersaiyanmode/PyWebOSTV [builds on above project]
 #### Sony
 - https://github.com/Photonios/py-sony-bravia-remote
 - https://github.com/mpermana/public
@@ -19,9 +25,6 @@ https://pro-bravia.sony.net/develop/index.html
 #### Hisense
 - using MQTT messaging (IoT protocol)
 - https://github.com/Krazy998/mqtt-hisensetv
-#### LG
-- https://github.com/klattimer/LGWebOSRemote [Python]
-- https://github.com/supersaiyanmode/PyWebOSTV [builds on above project]
 #### Vizio
 - https://github.com/heathbar/vizio-smart-cast [Javascript]
 - https://github.com/vkorn/pyvizio [Python]
