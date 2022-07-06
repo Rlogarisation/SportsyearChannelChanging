@@ -1,6 +1,7 @@
-from db.storage import persist_store, load_tv_ips
+from db.storage import persist_store, load_tv_ips, persist_tv_channels, load_store
 from pywebostv.connection import WebOSClient
 from werkzeug.exceptions import BadRequest
+from pywebostv.controls import TvControl
 
 def connect_client(client, store):
     client.connect()
@@ -17,3 +18,17 @@ def load_ip(ip_num):
         raise BadRequest('tv_id out of range')
 
     return str(load_tv_ips()['scan'][ip_num]['address'])
+
+def scan_channels(tv_id):
+    # setup client
+    client = WebOSClient(load_ip(int(tv_id)))
+    connect_client(client, load_store())
+    tv_control = TvControl(client)
+
+    list = tv_control.channel_list()
+    tv_channels = {}
+
+    for item in list['channelList']:
+        tv_channels[item["channelNumber"]] = item["channelId"]
+    persist_tv_channels(tv_channels)
+    return tv_channels
