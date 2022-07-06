@@ -24,3 +24,13 @@ def persist_tv_ips(new_store):
     db = shelve.open('db\storage')
     db['scan'] = new_store
     db.close()
+
+def persist_tv_channels(list):
+    db = shelve.open('db\storage')
+    db['channels'] = list
+    db.close()
+
+def load_tv_channels():
+    db = shelve.open('db\storage')
+    store = db['channels']
+    return store
