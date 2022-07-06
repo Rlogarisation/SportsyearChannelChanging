@@ -14,10 +14,10 @@ def connect_client(client, store):
     persist_store(store)
 
 def load_ip(ip_num):
-    if ip_num >= len(load_tv_ips()['scan']) or ip_num < 0 :
+    if ip_num >= len(load_tv_ips()) or ip_num < 0 :
         raise BadRequest('tv_id out of range')
 
-    return str(load_tv_ips()['scan'][ip_num]['address'])
+    return str(load_tv_ips()[ip_num]['address'])
 
 def scan_channels(tv_id):
     # setup client

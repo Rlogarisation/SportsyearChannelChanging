@@ -2,7 +2,7 @@ import socket
 import re
 from urllib.parse import unquote
 from time import sleep
-
+from flask import Blueprint
 
 def LGTVScan():
     request = b'M-SEARCH * HTTP/1.1\r\n' \
@@ -50,3 +50,17 @@ def LGTVScan():
     sock.close()
     addresses = list({x['address']: x for x in addresses}.values())
     return addresses
+
+# Setup blueprint for scan routes
+scan = Blueprint('scan', __name__, url_prefix='/smart')
+
+"""
+Retrieve list of tv's with their ip_address, tv_name & uuid
+Method = GET
+"""
+@scan.route("/list", methods=['GET'])
+def ScanTV():
+    results = LGTVScan()
+    return {
+        "scan" : results
+    }
