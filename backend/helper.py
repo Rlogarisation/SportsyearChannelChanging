@@ -13,11 +13,17 @@ def connect_client(client, store):
 
     persist_store(store)
 
-def load_ip(ip_num):
-    if ip_num >= len(load_tv_ips()) or ip_num < 0 :
+def load_ip(tv_num):
+    if tv_num >= len(load_tv_ips()) or tv_num < 0 :
         raise BadRequest('tv_id out of range')
 
-    return str(load_tv_ips()[ip_num]['address'])
+    return str(load_tv_ips()[tv_num]['address'])
+
+def load_mac(tv_num):
+    if tv_num >= len(load_tv_ips()) or tv_num < 0 :
+        raise BadRequest('tv_id out of range')
+
+    return str(load_tv_ips()[tv_num]['mac'])
 
 def scan_channels(tv_id):
     # setup client

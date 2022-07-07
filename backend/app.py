@@ -4,7 +4,7 @@ from routes.scan import LGTVScan
 from pywebostv.discovery import discover, read_location, validate_location
 from pywebostv.connection import WebOSClient
 from pywebostv.controls import WebOSControlBase, MediaControl, TvControl, SystemControl, ApplicationControl, InputControl, SourceControl
-from db.storage import load_store, persist_tv_ips
+from db.storage import load_store, persist_tv_ips, load_tv_ips
 from helper import connect_client, load_ip, scan_channels
 import json
 # from flask_apscheduler import APScheduler
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     tv_id = 0
 
     # Setup initial registration/connection to client
-    client = WebOSClient(load_ip(0))
+    client = WebOSClient(load_ip(tv_id))
     connect_client(client, load_store())
 
     # Store channel data in db

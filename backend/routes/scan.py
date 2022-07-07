@@ -3,6 +3,7 @@ import re
 from urllib.parse import unquote
 from time import sleep
 from flask import Blueprint
+from getmac import get_mac_address
 
 def LGTVScan():
     request = b'M-SEARCH * HTTP/1.1\r\n' \
@@ -37,7 +38,8 @@ def LGTVScan():
         data = {
             'uuid': uuid,
             'tv_name': tv_name,
-            'address': address[0]
+            'address': address[0],
+            'mac' : get_mac_address(ip=address[0])
         }
 
         if re.search(b'LG', response):
