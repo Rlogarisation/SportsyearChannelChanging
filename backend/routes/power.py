@@ -1,3 +1,4 @@
+from ipaddress import ip_address
 from flask import Blueprint, request
 from pywebostv.connection import WebOSClient
 from db.storage import load_store
@@ -27,7 +28,7 @@ Method = POST
 """
 @power.route("/<tv_id>/power_on", methods=['POST'])
 def power_on(tv_id):
-    send_magic_packet(str(load_mac(int(tv_id))))
+    send_magic_packet(str(load_mac(int(tv_id))), ip_address=load_ip(int(tv_id)))
     # send_magic_packet("b4:b2:91:41:7e:32")
     print(str(load_mac(int(tv_id))))
     return {}
