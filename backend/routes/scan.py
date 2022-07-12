@@ -3,6 +3,8 @@ import re
 from urllib.parse import unquote
 from time import sleep
 from flask import Blueprint
+from db.storage import persist_tv_ips, load_tv_ips
+from werkzeug.exceptions import BadRequest
 
 def LGTVScan():
     request = b'M-SEARCH * HTTP/1.1\r\n' \
@@ -48,7 +50,7 @@ def LGTVScan():
         sleep(2)
 
     sock.close()
-    addresses = list({x['address']: x for x in addresses}.values())
+    addresses = list({x['uuid']: x for x in addresses}.values())
     return addresses
 
 # Setup blueprint for scan routes
@@ -60,7 +62,21 @@ Method = GET
 """
 @scan.route("/list", methods=['GET'])
 def ScanTV():
-    results = LGTVScan()
-    return {
-        "scan" : results
-    }
+    try:
+        results = LGTVScan()
+        current_ips = load_tv_ips()
+        new_ips = current_ips.copy()
+        update_ip = False
+        for tv in results:
+            if tv not in current_ips:
+                print('add tv to current ips')
+                new_ips.append(tv)
+                update_ip = True
+        if update_ip:
+            persist_tv_ips(new_ips)
+        return {
+            "scan" : new_ips
+        }
+
+    except:
+        raise BadRequest("No TV's were scanned")
