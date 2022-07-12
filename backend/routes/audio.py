@@ -60,24 +60,17 @@ def set_volume(tv_id):
     return {}
 
 """
-Mute tv with tv_id
-Status = "True" for mute
-Status = "False" for unmute
+Toggle mute for tv with tv_id
 Method = POST
 """
 @audio.route("/<tv_id>/mute", methods=['POST'])
-def mute(tv_id):
-    # retrieve mute status argument
-    data = request.get_json()
-    status = data['status']
-
-    if status != 'True' and status != 'False':
-        raise BadRequest('Status should be "True" or "False"')
-
+def toggle_mute(tv_id):
     # setup client
     client = WebOSClient(load_ip(int(tv_id)))
     connect_client(client, load_store())
     media = MediaControl(client)
 
-    media.mute(status == 'True')
-    return {}
+    data = media.get_volume()
+    status = data['volumeStatus']['muteStatus']
+    media.mute(not status)
+    return {'new_status' : not status}
