@@ -28,22 +28,6 @@ app.register_blueprint(scan_bp)
 from routes.power import power as power_bp
 app.register_blueprint(power_bp)
 
-@app.route("/smart/<tv_id>/raise_volume", methods=['POST'])
-def raise_volume(tv_id):
-    client = WebOSClient(load_ip(int(tv_id)))
-    connect_client(client, load_store())
-    media = MediaControl(client)
-    media.volume_up()
-    return {}
-
-@app.route("/smart/<tv_id>/lower_volume", methods=['POST'])
-def lower_volume(tv_id):
-    client = WebOSClient(load_ip(int(tv_id)))
-    connect_client(client, load_store())
-    media = MediaControl(client)
-    media.volume_down()
-    return {}
-
 if __name__ == "__main__":
     # Setup IPs
     tv_ips = LGTVScan()
