@@ -14,6 +14,16 @@ def connect_client(client, uuid):
 
     persist_store(store, uuid)
 
+def load_mac(uuid):
+    data = load_tv_data()
+
+    try:
+        mac = data[uuid]['mac_address']
+    except:
+        raise BadRequest("Provided UUID doesn't exist in database")
+
+    return mac
+
 def load_ip(uuid):
     data = load_tv_data()
 

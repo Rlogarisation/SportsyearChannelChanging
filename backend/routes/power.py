@@ -1,8 +1,10 @@
+from ipaddress import ip_address
 from flask import Blueprint, request
 from pywebostv.connection import WebOSClient
 from db.storage import load_store
-from helper import connect_client, load_ip
+from helper import connect_client, load_ip, load_mac
 from pywebostv.controls import SystemControl
+from wakeonlan import send_magic_packet
 
 power = Blueprint('power', __name__, url_prefix='/smart/<uuid>/')
 
@@ -18,6 +20,17 @@ def power_off(uuid):
     system = SystemControl(client)
 
     system.power_off()
+    return {}
+
+"""
+Turn tv with uuid on
+Method = POST
+"""
+@power.route("/power_on", methods=['POST'])
+def power_on(uuid):
+    send_magic_packet(str(load_mac(uuid)), ip_address=load_ip(uuid))
+    # send_magic_packet("b4:b2:91:41:7e:32")
+    print(str(load_mac(uuid)))
     return {}
 
 """

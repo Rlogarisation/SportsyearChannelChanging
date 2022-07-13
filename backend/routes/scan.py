@@ -3,6 +3,8 @@ import re
 from urllib.parse import unquote
 from time import sleep
 from flask import Blueprint
+from getmac import get_mac_address
+from helper import scan_channels
 from db.storage import persist_tv_data, load_tv_data
 from werkzeug.exceptions import BadRequest
 
@@ -39,7 +41,8 @@ def LGTVScan():
         data = {
             'uuid': uuid,
             'tv_name': tv_name,
-            'address': address[0]
+            'ip_address': address[0],
+            'mac_address' : get_mac_address(ip=address[0])
         }
 
         if re.search(b'LG', response):
@@ -58,7 +61,8 @@ def LGTVScan():
     for address in addresses:
         dict_addresses[address['uuid']] = {
             'tv_name' : address['tv_name'],
-            'ip_address' : address['address']
+            'ip_address' : address['ip_address'],
+            'mac_address' : address['mac_address']
         }
     return dict_addresses
 
@@ -85,8 +89,11 @@ def ScanTV():
                 update_ip = True
         if update_ip:
             persist_tv_data(new_data)
+
+        for uuid in new_data:
+            scan_channels(uuid)
         return {
-            "scan" : new_data
+            "scan" : load_tv_data()
         }
 
     except:

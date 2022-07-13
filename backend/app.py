@@ -28,4 +28,7 @@ from routes.power import power as power_bp
 app.register_blueprint(power_bp)
 
 if __name__ == "__main__":
+    # Run below command if database is corrupted
+    # persist_tv_data({})
+
     app.run()
