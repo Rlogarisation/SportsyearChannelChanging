@@ -49,6 +49,15 @@ def _channel_list(uuid):
     list = tv_control.channel_list()
     return {"list" : list}
 
+def _get_channel(uuid):
+    # setup client
+    client = WebOSClient(load_ip(uuid))
+    connect_client(client, uuid)
+    tv_control = TvControl(client)
+
+    channel = tv_control.get_current_channel()
+    return {"channel" : channel}
+
 # CHANNEL ROUTES BELOW
 
 """
@@ -84,10 +93,20 @@ def lower_channel():
 
 """
 Retrieve channel list for tv with uuid
-Method = POST
+Method = GET
 """
 @channels.route("/channel_list", methods=['GET'])
 def channel_list():
     data = request.get_json()
     uuid = data['uuid']
     return _channel_list(uuid)
+
+"""
+Retrieve current channel
+Method = GET
+"""
+@channels.route("/get_channel", methods=['GET'])
+def get_channel():
+    data = request.get_json()
+    uuid = data['uuid']
+    return _get_channel(uuid)
