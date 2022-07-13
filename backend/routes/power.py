@@ -6,14 +6,9 @@ from helper import connect_client, load_ip, load_mac
 from pywebostv.controls import SystemControl
 from wakeonlan import send_magic_packet
 
-power = Blueprint('power', __name__, url_prefix='/smart/<uuid>/')
+power = Blueprint('power', __name__, url_prefix='/smart/')
 
-"""
-Turn tv with uuid off
-Method = POST
-"""
-@power.route("/power_off", methods=['POST'])
-def power_off(uuid):
+def _power_off(uuid):
     # setup client
     client = WebOSClient(load_ip(uuid))
     connect_client(client, uuid)
@@ -22,23 +17,13 @@ def power_off(uuid):
     system.power_off()
     return {}
 
-"""
-Turn tv with uuid on
-Method = POST
-"""
-@power.route("/power_on", methods=['POST'])
-def power_on(uuid):
+def _power_on(uuid):
     send_magic_packet(str(load_mac(uuid)), ip_address=load_ip(uuid))
     # send_magic_packet("b4:b2:91:41:7e:32")
     print(str(load_mac(uuid)))
     return {}
 
-"""
-Turn tv screen with uuid OFF
-Method = POST
-"""
-@power.route("/screen_off", methods=['POST'])
-def screen_off(uuid):
+def _screen_off(uuid):
     # setup client
     client = WebOSClient(load_ip(uuid))
     connect_client(client, uuid)
@@ -46,13 +31,8 @@ def screen_off(uuid):
 
     system.screen_off()
     return {}
-    
-"""
-Turn tv screen with uuid ON
-Method = POST
-"""
-@power.route("/screen_on", methods=['POST'])
-def screen_on(uuid):
+
+def _screen_on(uuid):
     # setup client
     client = WebOSClient(load_ip(uuid))
     connect_client(client, uuid)
@@ -60,3 +40,45 @@ def screen_on(uuid):
 
     system.screen_on()
     return {}
+
+# POWER ROUTES BELOW
+
+"""
+Turn tv with uuid off
+Method = POST
+"""
+@power.route("/power_off", methods=['POST'])
+def power_off():
+    data = request.get_json()
+    uuid = data['uuid']
+    return _power_off(uuid)
+
+"""
+Turn tv with uuid on
+Method = POST
+"""
+@power.route("/power_on", methods=['POST'])
+def power_on():
+    data = request.get_json()
+    uuid = data['uuid']
+    return _power_on(uuid)
+
+"""
+Turn tv screen with uuid OFF
+Method = POST
+"""
+@power.route("/screen_off", methods=['POST'])
+def screen_off():
+    data = request.get_json()
+    uuid = data['uuid']
+    return _screen_off(uuid)
+    
+"""
+Turn tv screen with uuid ON
+Method = POST
+"""
+@power.route("/screen_on", methods=['POST'])
+def screen_on():
+    data = request.get_json()
+    uuid = data['uuid']
+    return _screen_on(uuid)

@@ -2,7 +2,7 @@ import socket
 import re
 from urllib.parse import unquote
 from time import sleep
-from flask import Blueprint
+from flask import Blueprint, request
 from getmac import get_mac_address
 from helper import scan_channels
 from db.storage import persist_tv_data, load_tv_data
@@ -69,6 +69,15 @@ def LGTVScan():
 # Setup blueprint for scan routes
 scan = Blueprint('scan', __name__, url_prefix='/smart/')
 
+def _remove_tv(uuid):
+    data = load_tv_data()
+    try:
+        del data[uuid]
+        persist_tv_data(data)
+    except:
+        raise BadRequest('UUID does not exist in Database')
+    return {}
+
 """
 Scan TV's, adding any extra TV's found to the existing list in the database
 Returns the resultant list of TV Data in the database
@@ -103,12 +112,8 @@ def ScanTV():
 Remove tv with uuid from the database
 Method = DEL
 """
-@scan.route("/<uuid>/remove_tv", methods=['DELETE'])
-def remove_tv(uuid):
-    data = load_tv_data()
-    try:
-        del data[uuid]
-        persist_tv_data(data)
-    except:
-        raise BadRequest('UUID does not exist in Database')
-    return {}
+@scan.route("/remove_tv", methods=['DELETE'])
+def remove_tv():
+    data = request.get_json()
+    uuid = data['uuid']
+    return _remove_tv(uuid)
