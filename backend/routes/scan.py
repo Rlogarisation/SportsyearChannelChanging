@@ -98,3 +98,17 @@ def ScanTV():
 
     except:
         raise BadRequest("No TV's were scanned")
+
+"""
+Remove tv with uuid from the database
+Method = DEL
+"""
+@scan.route("/<uuid>/remove_tv", methods=['DELETE'])
+def remove_tv(uuid):
+    data = load_tv_data()
+    try:
+        del data[uuid]
+        persist_tv_data(data)
+    except:
+        raise BadRequest('UUID does not exist in Database')
+    return {}
