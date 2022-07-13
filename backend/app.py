@@ -1,10 +1,9 @@
 # using pywebostv https://github.com/supersaiyanmode/PyWebOSTV
 from flask import Flask, request
-from routes.scan import LGTVScan
 from pywebostv.discovery import discover, read_location, validate_location
 from pywebostv.connection import WebOSClient
 from pywebostv.controls import WebOSControlBase, MediaControl, TvControl, SystemControl, ApplicationControl, InputControl, SourceControl
-from db.storage import load_store, persist_tv_ips
+from db.storage import load_store, persist_tv_data, load_tv_channels, load_tv_data, persist_store
 from helper import connect_client, load_ip, scan_channels
 import json
 # from flask_apscheduler import APScheduler
@@ -29,17 +28,4 @@ from routes.power import power as power_bp
 app.register_blueprint(power_bp)
 
 if __name__ == "__main__":
-    # Setup IPs
-    tv_ips = LGTVScan()
-    persist_tv_ips(tv_ips)
-
-    tv_id = 0
-
-    # Setup initial registration/connection to client
-    client = WebOSClient(load_ip(0))
-    connect_client(client, load_store())
-
-    # Store channel data in db
-    scan_channels(tv_id)
-
     app.run()
