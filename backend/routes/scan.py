@@ -4,6 +4,9 @@ from urllib.parse import unquote
 from time import sleep
 from flask import Blueprint
 from getmac import get_mac_address
+from helper import scan_channels
+from db.storage import persist_tv_data, load_tv_data
+from werkzeug.exceptions import BadRequest
 
 def LGTVScan():
     request = b'M-SEARCH * HTTP/1.1\r\n' \
@@ -38,8 +41,8 @@ def LGTVScan():
         data = {
             'uuid': uuid,
             'tv_name': tv_name,
-            'address': address[0],
-            'mac' : get_mac_address(ip=address[0])
+            'ip_address': address[0],
+            'mac_address' : get_mac_address(ip=address[0])
         }
 
         if re.search(b'LG', response):
@@ -50,19 +53,48 @@ def LGTVScan():
         sleep(2)
 
     sock.close()
-    addresses = list({x['address']: x for x in addresses}.values())
-    return addresses
+
+    addresses = list({x['uuid']: x for x in addresses}.values())
+
+    # Reformat Addresses so we can index by uuid
+    dict_addresses = {}
+    for address in addresses:
+        dict_addresses[address['uuid']] = {
+            'tv_name' : address['tv_name'],
+            'ip_address' : address['ip_address'],
+            'mac_address' : address['mac_address']
+        }
+    return dict_addresses
 
 # Setup blueprint for scan routes
-scan = Blueprint('scan', __name__, url_prefix='/smart')
+scan = Blueprint('scan', __name__, url_prefix='/smart/')
 
 """
-Retrieve list of tv's with their ip_address, tv_name & uuid
+Scan TV's, adding any extra TV's found to the existing list in the database
+Returns the resultant list of TV Data in the database
 Method = GET
 """
-@scan.route("/list", methods=['GET'])
+@scan.route("/scan", methods=['GET'])
 def ScanTV():
-    results = LGTVScan()
-    return {
-        "scan" : results
-    }
+    try:
+        results = LGTVScan()
+        current_data = load_tv_data()
+        new_data = current_data.copy()
+        update_ip = False
+
+        for tv in results.keys():
+            if tv not in current_data.keys():
+                print(f'add tv [{tv}] to current ips')
+                new_data[tv] = results[tv]
+                update_ip = True
+        if update_ip:
+            persist_tv_data(new_data)
+
+        for uuid in new_data:
+            scan_channels(uuid)
+        return {
+            "scan" : load_tv_data()
+        }
+
+    except:
+        raise BadRequest("No TV's were scanned")
