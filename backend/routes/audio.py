@@ -60,11 +60,11 @@ def set_volume(uuid):
     return {}
 
 """
-Toggle mute for tv with tv_id
+Toggle mute for tv with uuid
 Method = POST
 """
-@audio.route("/<tv_id>/mute", methods=['POST'])
-def toggle_mute(tv_id):
+@audio.route("/mute", methods=['POST'])
+def toggle_mute(uuid):
     # setup client
     client = WebOSClient(load_ip(uuid))
     connect_client(client, uuid)
