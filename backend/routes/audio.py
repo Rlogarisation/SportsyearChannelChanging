@@ -60,24 +60,17 @@ def set_volume(uuid):
     return {}
 
 """
-Mute tv with uuid
-Status = "True" for mute
-Status = "False" for unmute
+Toggle mute for tv with tv_id
 Method = POST
 """
-@audio.route("/mute", methods=['POST'])
-def mute(uuid):
-    # retrieve mute status argument
-    data = request.get_json()
-    status = data['status']
-
-    if status != 'True' and status != 'False':
-        raise BadRequest('Status should be "True" or "False"')
-
+@audio.route("/<tv_id>/mute", methods=['POST'])
+def toggle_mute(tv_id):
     # setup client
     client = WebOSClient(load_ip(uuid))
     connect_client(client, uuid)
     media = MediaControl(client)
 
-    media.mute(status == 'True')
-    return {}
+    data = media.get_volume()
+    status = data['volumeStatus']['muteStatus']
+    media.mute(not status)
+    return {'new_status' : not status}
