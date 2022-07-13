@@ -4,45 +4,45 @@ from db.storage import load_store
 from helper import connect_client, load_ip
 from pywebostv.controls import SystemControl
 
-power = Blueprint('power', __name__, url_prefix='/smart')
+power = Blueprint('power', __name__, url_prefix='/smart/<uuid>/')
 
 """
-Turn tv with tv_id off
+Turn tv with uuid off
 Method = POST
 """
-@power.route("/<tv_id>/power_off", methods=['POST'])
-def power_off(tv_id):
+@power.route("/power_off", methods=['POST'])
+def power_off(uuid):
     # setup client
-    client = WebOSClient(load_ip(int(tv_id)))
-    connect_client(client, load_store())
+    client = WebOSClient(load_ip(uuid))
+    connect_client(client, uuid)
     system = SystemControl(client)
 
     system.power_off()
     return {}
 
 """
-Turn tv screen with tv_id OFF
+Turn tv screen with uuid OFF
 Method = POST
 """
-@power.route("/<tv_id>/screen_off", methods=['POST'])
-def screen_off(tv_id):
+@power.route("/screen_off", methods=['POST'])
+def screen_off(uuid):
     # setup client
-    client = WebOSClient(load_ip(int(tv_id)))
-    connect_client(client, load_store())
+    client = WebOSClient(load_ip(uuid))
+    connect_client(client, uuid)
     system = SystemControl(client)
 
     system.screen_off()
     return {}
     
 """
-Turn tv screen with tv_id ON
+Turn tv screen with uuid ON
 Method = POST
 """
-@power.route("/<tv_id>/screen_on", methods=['POST'])
-def screen_on(tv_id):
+@power.route("/screen_on", methods=['POST'])
+def screen_on(uuid):
     # setup client
-    client = WebOSClient(load_ip(int(tv_id)))
-    connect_client(client, load_store())
+    client = WebOSClient(load_ip(uuid))
+    connect_client(client, uuid)
     system = SystemControl(client)
 
     system.screen_on()

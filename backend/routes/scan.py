@@ -3,7 +3,7 @@ import re
 from urllib.parse import unquote
 from time import sleep
 from flask import Blueprint
-from db.storage import persist_tv_ips, load_tv_ips
+from db.storage import persist_tv_data, load_tv_data
 from werkzeug.exceptions import BadRequest
 
 def LGTVScan():
@@ -50,32 +50,43 @@ def LGTVScan():
         sleep(2)
 
     sock.close()
+
     addresses = list({x['uuid']: x for x in addresses}.values())
-    return addresses
+
+    # Reformat Addresses so we can index by uuid
+    dict_addresses = {}
+    for address in addresses:
+        dict_addresses[address['uuid']] = {
+            'tv_name' : address['tv_name'],
+            'ip_address' : address['address']
+        }
+    return dict_addresses
 
 # Setup blueprint for scan routes
-scan = Blueprint('scan', __name__, url_prefix='/smart')
+scan = Blueprint('scan', __name__, url_prefix='/smart/')
 
 """
-Retrieve list of tv's with their ip_address, tv_name & uuid
+Scan TV's, adding any extra TV's found to the existing list in the database
+Returns the resultant list of TV Data in the database
 Method = GET
 """
-@scan.route("/list", methods=['GET'])
+@scan.route("/scan", methods=['GET'])
 def ScanTV():
     try:
         results = LGTVScan()
-        current_ips = load_tv_ips()
-        new_ips = current_ips.copy()
+        current_data = load_tv_data()
+        new_data = current_data.copy()
         update_ip = False
-        for tv in results:
-            if tv not in current_ips:
-                print('add tv to current ips')
-                new_ips.append(tv)
+
+        for tv in results.keys():
+            if tv not in current_data.keys():
+                print(f'add tv [{tv}] to current ips')
+                new_data[tv] = results[tv]
                 update_ip = True
         if update_ip:
-            persist_tv_ips(new_ips)
+            persist_tv_data(new_data)
         return {
-            "scan" : new_ips
+            "scan" : new_data
         }
 
     except:
