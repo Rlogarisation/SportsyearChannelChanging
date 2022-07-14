@@ -1,9 +1,16 @@
 const volumeUpButton = document.getElementById("volumeUpButton");
 const volumeDownButton = document.getElementById("volumeDownButton");
 const muteButton = document.getElementById("muteButton");
+const channelIncrementButton = document.getElementById("channelIncrementButton");
+const channelDecrementButton = document.getElementById("channelDecrementButton");
+const powerButton = document.getElementById("powerButton");
+
 volumeUpButton.addEventListener("click", volumeIncrement);
 volumeDownButton.addEventListener("click", volumeDecrement);
 muteButton.addEventListener("click", muteFunction);
+channelIncrementButton.addEventListener("click", channelIncrement);
+channelDecrementButton.addEventListener("click", channelDecrement);
+powerButton.addEventListener("click", power);
 
 const fetchAPI = (method, header, body, path) => {
   if (header === "default") {
@@ -47,4 +54,16 @@ function volumeDecrement() {
 
 function muteFunction() {
   console.log("MUTE!");
+}
+
+function channelIncrement() {
+  console.log("CHANNEL += 1");
+}
+
+function channelDecrement() {
+  console.log("CHANNEL -= 1");
+}
+
+function power() {
+  console.log("POWER BUTTON PRESSED.");
 }
