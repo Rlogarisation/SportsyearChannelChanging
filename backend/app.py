@@ -1,5 +1,6 @@
 # using pywebostv https://github.com/supersaiyanmode/PyWebOSTV
 from flask import Flask, request
+from flask_cors import CORS
 from pywebostv.discovery import discover, read_location, validate_location
 from pywebostv.connection import WebOSClient
 from pywebostv.controls import WebOSControlBase, MediaControl, TvControl, SystemControl, ApplicationControl, InputControl, SourceControl
@@ -10,6 +11,7 @@ import json
 # https://viniciuschiele.github.io/flask-apscheduler/index.html
 # scheduler = APScheduler()
 app = Flask(__name__)
+CORS(app)
 # Background task scheduler
 # scheduler.init_app(app)
 # scheduler.start()
