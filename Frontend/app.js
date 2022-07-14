@@ -1,16 +1,13 @@
+// MMAN4010/MMAN4020 PROJECT 8 SPORTSYEAR BY ZHENG LUO(Z5206267)
+// TODO: MUST CHANGE VARIABLE BELOW:
+const FETCHURL = 'http://localhost:5005/';
+
 const volumeUpButton = document.getElementById("volumeUpButton");
 const volumeDownButton = document.getElementById("volumeDownButton");
 const muteButton = document.getElementById("muteButton");
 const channelIncrementButton = document.getElementById("channelIncrementButton");
 const channelDecrementButton = document.getElementById("channelDecrementButton");
 const powerButton = document.getElementById("powerButton");
-
-volumeUpButton.addEventListener("click", volumeIncrement);
-volumeDownButton.addEventListener("click", volumeDecrement);
-muteButton.addEventListener("click", muteFunction);
-channelIncrementButton.addEventListener("click", channelIncrement);
-channelDecrementButton.addEventListener("click", channelDecrement);
-powerButton.addEventListener("click", power);
 
 const fetchAPI = (method, header, body, path) => {
   if (header === "default") {
@@ -23,7 +20,7 @@ const fetchAPI = (method, header, body, path) => {
   };
 
   return new Promise((resolve, reject) => {
-    fetch('http://localhost:5005/' + path, requestInfo)
+    fetch(FETCHURL + path, requestInfo)
       .then((response) => {
         if (response.status === 400 || response.status === 403) {
           response.json().then((errorMes) => {
@@ -44,26 +41,41 @@ const fetchAPI = (method, header, body, path) => {
 
 };
 
-function volumeIncrement() {
-  console.log("VOLUME UP!");
+const volumeIncrement = () => {
+  console.log("VOLUME UP Pressed");
+  const jsonString = JSON.stringify({});
+  fetchAPI('POST', "default", jsonString, 'smart/raise_volume')
+    .then(() =>{
+      console.log("You Have Been Successfully VOLUME UP!");
+    })
+    .catch((err) => {
+      alert("Oops API fetched failed due to" + err);
+    });
 }
 
-function volumeDecrement() {
+const volumeDecrement = () => {
   console.log("VOLUME DOWN!");
 }
 
-function muteFunction() {
+const muteFunction = () => {
   console.log("MUTE!");
 }
 
-function channelIncrement() {
+const channelIncrement = () => {
   console.log("CHANNEL += 1");
 }
 
-function channelDecrement() {
+const channelDecrement = () => {
   console.log("CHANNEL -= 1");
 }
 
-function power() {
+const power = () => {
   console.log("POWER BUTTON PRESSED.");
 }
+
+volumeUpButton.addEventListener("click", volumeIncrement);
+volumeDownButton.addEventListener("click", volumeDecrement);
+muteButton.addEventListener("click", muteFunction);
+channelIncrementButton.addEventListener("click", channelIncrement);
+channelDecrementButton.addEventListener("click", channelDecrement);
+powerButton.addEventListener("click", power);
