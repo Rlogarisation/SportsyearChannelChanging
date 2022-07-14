@@ -51,6 +51,15 @@ def _toggle_mute(uuid):
     media.mute(not status)
     return {'new_status' : not status}
 
+def _get_volume(uuid):
+    # setup client
+    client = WebOSClient(load_ip(uuid))
+    connect_client(client, uuid)
+    media = MediaControl(client)
+
+    volume_data = media.get_volume()
+    return {"volume_data" : volume_data}
+
 """
 Raise the volume of tv with uuid by 1
 Method = POST
@@ -92,3 +101,13 @@ def toggle_mute():
     data = request.get_json()
     uuid = data['uuid']
     return _toggle_mute(uuid)
+
+"""
+Retreive current volume data from tv with uuid
+Method = GET
+"""
+@audio.route("/get_volume", methods=['GET'])
+def get_volume():
+    data = request.get_json()
+    uuid = data['uuid']
+    return _get_volume(uuid)
