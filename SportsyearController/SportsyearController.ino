@@ -103,7 +103,7 @@ String GetRaiseVolumeCode(String type);
 String GetMuteCode(String type);
 String GetCodeFromNumber(char channel, String type);
 String GetRaiseChannelCode(String type);
-String GetLowerChannelCode(String type)
+String GetLowerChannelCode(String type);
 
 //+=============================================================================
 // Callback notifying us of the need to save config
@@ -1113,93 +1113,6 @@ void setup() {
 
 
 
-
-
-
-
-
-
-
-
-
-    // Setup simple msg server to mirror version 1.0 functionality
-    server->on("/msg", []() {
-        Serial.println("Connection received endpoint '/msg'");
-
-        int simple = 0;
-        if (server->hasArg("simple")) simple = server->arg("simple").toInt();
-        String signature = server->arg("auth");
-        String epid = server->arg("epid");
-        String mid = server->arg("mid");
-        String timestamp = server->arg("time");
-
-        digitalWrite(ledpin, LOW);
-        ticker.attach(0.5, disableLed);
-        String type = server->arg("type");
-        String data = server->arg("data");
-        String ip = server->arg("ip");
-
-        // Handle device state limitations
-        if (server->hasArg("device")) {
-            String device = server->arg("device");
-            Serial.println("Device name detected " + device);
-            int state = (server->hasArg("state")) ? server->arg("state").toInt() : 0;
-            if (deviceState.containsKey(device)) {
-                Serial.println("Contains the key!");
-                Serial.println(state);
-                int currentState = deviceState[device];
-                Serial.println(currentState);
-                if (state == currentState) {
-                    if (simple) {
-                        sendCorsHeaders();
-                        server->send(200, "text/html", "Not sending command to " + device + ", already in state " + state);
-                    } else {
-                        sendHomePage("Not sending command to " + device + ", already in state " + state, "Warning", 2); // 200
-                    }
-                    Serial.println("Not sending command to " + device + ", already in state " + state);
-                    return;
-                } else {
-                    Serial.println("Setting device " + device + " to state " + state);
-                    deviceState[device] = state;
-                }
-            } else {
-                Serial.println("Setting device " + device + " to state " + state);
-                deviceState[device] = state;
-            }
-        }
-
-        int len = server->arg("length").toInt();
-        long address = 0;
-        if (server->hasArg("address")) {
-            String addressString = server->arg("address");
-            address = strtoul(addressString.c_str(), 0, 0);
-        }
-
-        int rdelay = (server->hasArg("rdelay")) ? server->arg("rdelay").toInt() : 1000;
-        int pulse = (server->hasArg("pulse")) ? server->arg("pulse").toInt() : 1;
-        int pdelay = (server->hasArg("pdelay")) ? server->arg("pdelay").toInt() : 100;
-        int repeat = (server->hasArg("repeat")) ? server->arg("repeat").toInt() : 1;
-        int out = (server->hasArg("out")) ? server->arg("out").toInt() : 1;
-        if (server->hasArg("code")) {
-            String code = server->arg("code");
-            char separator = ':';
-            data = getValue(code, separator, 0);
-            type = getValue(code, separator, 1);
-            len = getValue(code, separator, 2).toInt();
-        }
-
-        if (simple) {
-            sendCorsHeaders();
-            server->send(200, "text/html", "Success, code sent");
-        }
-
-        irblast(type, data, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
-
-        if (!simple) {
-            sendHomePage("Code Sent", "Success", 1); // 200
-        }
-    });
-
     server->on("/", []() {
         Serial.println("Connection received endpoint '/'");
         String signature = server->arg("auth");
@@ -1711,7 +1624,7 @@ String GetLowerVolumeCode(String type) {
 }
 
 String GetRaiseVolumeCode(String type) {
-    if (type == "NEC" || type == "LG") return "20DF40B";
+    if (type == "NEC" || type == "LG") return "20DF40BF";
 }
 
 String GetMuteCode(String type) {
