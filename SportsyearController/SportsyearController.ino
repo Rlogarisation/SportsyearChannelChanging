@@ -101,6 +101,7 @@ String GetCodeFromNumber(char channel, String type);
 String GetPowerCode(String type);
 String GetLowerVolumeCode(String type);
 String GetRaiseVolumeCode(String type);
+String GetMuteCode(String type);
 
 //+=============================================================================
 // Callback notifying us of the need to save config
@@ -528,6 +529,14 @@ void setup() {
 
 
 
+
+
+
+
+
+
+
+
     // Power route
     server->on("/ir/power", []() {
         Serial.println("Connection received endpoint '/ir/power'");
@@ -768,6 +777,85 @@ void setup() {
         }
     });
 
+    // Mute route
+    server->on("/ir/mute", []() {
+        Serial.println("Connection received endpoint '/ir/mute'");
+
+        int simple = 0;
+        if (server->hasArg("simple")) simple = server->arg("simple").toInt();
+        String signature = server->arg("auth");
+        String epid = server->arg("epid");
+        String mid = server->arg("mid");
+        String timestamp = server->arg("time");
+
+        digitalWrite(ledpin, LOW);
+        ticker.attach(0.5, disableLed);
+        String type = server->arg("type");
+        String data = server->arg("data");
+        String ip = server->arg("ip");
+
+        // Handle device state limitations
+        if (server->hasArg("device")) {
+            String device = server->arg("device");
+            Serial.println("Device name detected " + device);
+            int state = (server->hasArg("state")) ? server->arg("state").toInt() : 0;
+            if (deviceState.containsKey(device)) {
+                Serial.println("Contains the key!");
+                Serial.println(state);
+                int currentState = deviceState[device];
+                Serial.println(currentState);
+                if (state == currentState) {
+                    if (simple) {
+                        sendCorsHeaders();
+                        server->send(200, "text/html", "Not sending command to " + device + ", already in state " + state);
+                    } else {
+                        sendHomePage("Not sending command to " + device + ", already in state " + state, "Warning", 2); // 200
+                    }
+                    Serial.println("Not sending command to " + device + ", already in state " + state);
+                    return;
+                } else {
+                    Serial.println("Setting device " + device + " to state " + state);
+                    deviceState[device] = state;
+                }
+            } else {
+                Serial.println("Setting device " + device + " to state " + state);
+                deviceState[device] = state;
+            }
+        }
+
+        int len = server->arg("length").toInt();
+        long address = 0;
+        if (server->hasArg("address")) {
+            String addressString = server->arg("address");
+            address = strtoul(addressString.c_str(), 0, 0);
+        }
+
+        int rdelay = (server->hasArg("rdelay")) ? server->arg("rdelay").toInt() : 1000;
+        int pulse = (server->hasArg("pulse")) ? server->arg("pulse").toInt() : 1;
+        int pdelay = (server->hasArg("pdelay")) ? server->arg("pdelay").toInt() : 100;
+        int repeat = (server->hasArg("repeat")) ? server->arg("repeat").toInt() : 1;
+        int out = (server->hasArg("out")) ? server->arg("out").toInt() : 1;
+
+        if (server->hasArg("type")) {
+            String type = server->arg("type");
+            if (server->hasArg("length")) {
+                len = server->arg("length").toInt();
+            } else {
+                len = 32;
+            }
+            String code = GetMuteCode(type);
+            irblast(type, code, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
+        }
+
+        if (simple) {
+            sendCorsHeaders();
+            server->send(200, "text/html", "Success, code sent");
+        }
+
+        if (!simple) {
+            sendHomePage("Code Sent", "Success", 1); // 200
+        }
+    });
 
     // set_channel route
     server->on("/ir/set_channel", []() {
@@ -1483,6 +1571,10 @@ String GetLowerVolumeCode(String type) {
 
 String GetRaiseVolumeCode(String type) {
     if (type == "NEC" || type == "LG") return "20DF40B";
+}
+
+String GetMuteCode(String type) {
+    if (type == "NEC" || type == "LG") return "20DF906F";
 }
 
 void loop() {
