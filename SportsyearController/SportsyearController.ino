@@ -104,6 +104,7 @@ String GetMuteCode(String type);
 String GetCodeFromNumber(char channel, String type);
 String GetRaiseChannelCode(String type);
 String GetLowerChannelCode(String type);
+void irblastlong(String type, String dataStr, int dataStrLen, unsigned int len, int rdelay, int pulse, int pdelay, int repeat, long address, IRsend irsend);
 
 //+=============================================================================
 // Callback notifying us of the need to save config
@@ -924,15 +925,8 @@ void setup() {
             } else {
                 len = 32;
             }
-            // Convert to char array
             int expectedChannelLength = channel.length();
-            char Buf[expectedChannelLength];
-            channel.toCharArray(Buf, expectedChannelLength);
-            for (int i = 0; i < expectedChannelLength; i++) {
-                String code = GetCodeFromNumber(channel[i], type);
-                irblast(type, code, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
-                delay(1000);
-            }
+            irblastlong(type, channel, expectedChannelLength, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
         }
 
         if (simple) {
@@ -1424,126 +1418,6 @@ void cvrtCode(Code& codeData, decode_results *results) {
 }
 
 //+=============================================================================
-// Dump out the decode_results structure.
-//
-void dumpInfo(decode_results *results) {
-    if (results->overflow)
-        Serial.println("WARNING: IR code too long. "
-                    "Edit IRrecv.h and increase RAWBUF");
-
-    // Show Encoding standard
-    Serial.print("Encoding  : ");
-    Serial.print(encoding(results));
-    Serial.println("");
-
-    // Show Code & length
-    Serial.print("Code      : ");
-    serialPrintUint64(results->value, 16);
-    Serial.print(" (");
-    Serial.print(results->bits, DEC);
-    Serial.println(" bits)");
-}
-
-//+=============================================================================
-// Dump out the decode_results structure.
-//
-void dumpRaw(decode_results *results) {
-    // Print Raw data
-    Serial.print("Timing[");
-    Serial.print(results->rawlen - 1, DEC);
-    Serial.println("]: ");
-
-    for (uint16_t i = 1;  i < results->rawlen;  i++) {
-        if (i % 100 == 0)
-        yield();  // Preemptive yield every 100th entry to feed the WDT.
-        uint32_t x = results->rawbuf[i] * kRawTick;
-        if (!(i & 1)) {  // even
-        Serial.print("-");
-        if (x < 1000) Serial.print(" ");
-        if (x < 100) Serial.print(" ");
-        Serial.print(x, DEC);
-        } else {  // odd
-        Serial.print("     ");
-        Serial.print("+");
-        if (x < 1000) Serial.print(" ");
-        if (x < 100) Serial.print(" ");
-        Serial.print(x, DEC);
-        if (i < results->rawlen - 1)
-            Serial.print(", ");  // ',' not needed for last one
-        }
-        if (!(i % 8)) Serial.println("");
-    }
-    Serial.println("");  // Newline
-}
-
-//+=============================================================================
-// Dump out the decode_results structure.
-//
-void dumpCode(decode_results *results) {
-    // Start declaration
-    Serial.print("uint16_t  ");              // variable type
-    Serial.print("rawData[");                // array name
-    Serial.print(results->rawlen - 1, DEC);  // array size
-    Serial.print("] = {");                   // Start declaration
-
-    // Dump data
-    for (uint16_t i = 1; i < results->rawlen; i++) {
-        Serial.print(results->rawbuf[i] * kRawTick, DEC);
-        if (i < results->rawlen - 1)
-        Serial.print(",");  // ',' not needed on last one
-        if (!(i & 1)) Serial.print(" ");
-    }
-
-    // End declaration
-    Serial.print("};");  //
-
-    // Comment
-    Serial.print("  // ");
-    Serial.print(encoding(results));
-    Serial.print(" ");
-    serialPrintUint64(results->value, 16);
-
-    // Newline
-    Serial.println("");
-
-    // Now dump "known" codes
-    if (results->decode_type != UNKNOWN) {
-        // Some protocols have an address &/or command.
-        // NOTE: It will ignore the atypical case when a message has been decoded
-        // but the address & the command are both 0.
-        if (results->address > 0 || results->command > 0) {
-        Serial.print("uint32_t  address = 0x");
-        Serial.print(results->address, HEX);
-        Serial.println(";");
-        Serial.print("uint32_t  command = 0x");
-        Serial.print(results->command, HEX);
-        Serial.println(";");
-        }
-
-        // All protocols have data
-        Serial.print("uint64_t  data = 0x");
-        serialPrintUint64(results->value, 16);
-        Serial.println(";");
-    }
-}
-
-//+=============================================================================
-// Binary value to hex
-//
-String bin2hex(const uint8_t* bin, const int length) {
-    String hex = "";
-
-    for (int i = 0; i < length; i++) {
-        if (bin[i] < 16) {
-        hex += "0";
-        }
-        hex += String(bin[i], HEX);
-    }
-
-    return hex;
-}
-
-//+=============================================================================
 // Send IR codes to variety of sources
 //
 void irblast(String type, String dataStr, unsigned int len, int rdelay, int pulse, int pdelay, int repeat, long address, IRsend irsend) {
@@ -1572,6 +1446,35 @@ void irblast(String type, String dataStr, unsigned int len, int rdelay, int puls
         }
     }
 
+    Serial.println("Transmission complete");
+}
+
+void irblastlong(String type, String dataStr, int dataStrLen, unsigned int len, int rdelay, int pulse, int pdelay, int repeat, long address, IRsend irsend) {
+    type.toLowerCase();
+    for (int i = 0; i < dataStrLen; i++) {
+        char number = dataStr[i];
+        String code = GetCodeFromNumber(number, type);
+        uint64_t data = strtoull(("0x" + code).c_str(), 0, 0);
+        // Repeat Loop
+        for (int r = 0; r < repeat; r++) {
+            // Pulse Loop
+            for (int p = 0; p < pulse; p++) {
+                serialPrintUint64(data, HEX);
+                if (type == "nec") {
+                    irsend.sendNEC(data, len);
+                } else if (type == "lg") {
+                    irsend.sendLG(data, len);
+                }
+                if (p + 1 < pulse) delay(pdelay);
+            }
+                if (r + 1 < repeat) delay(rdelay);
+            if (toggleRC) {
+                if (type == "rc5") { _rc5toggle = !_rc5toggle; }
+                if (type == "rc6") { _rc6toggle = !_rc6toggle; }
+            }
+        }
+        delay(1000);
+    }
     Serial.println("Transmission complete");
 }
 
@@ -1628,7 +1531,7 @@ String GetMuteCode(String type) {
 }
 
 String GetCodeFromNumber(char number, String type) {
-    if (type == "NEC" || type == "LG") {
+    if (type == "nec" || type == "lg") {
         switch (number) {
             case '0': return "20DF08F7";
             case '1': return "20DF8877";
