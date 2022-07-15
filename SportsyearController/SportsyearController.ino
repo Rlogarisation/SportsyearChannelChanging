@@ -1557,10 +1557,6 @@ void irblast(String type, String dataStr, unsigned int len, int rdelay, int puls
         // Pulse Loop
         for (int p = 0; p < pulse; p++) {
         serialPrintUint64(data, HEX);
-        Serial.print(":");
-        Serial.print(type);
-        Serial.print(":");
-        Serial.println(len);
         if (type == "nec") {
             irsend.sendNEC(data, len);
         } else if (type == "lg") {
