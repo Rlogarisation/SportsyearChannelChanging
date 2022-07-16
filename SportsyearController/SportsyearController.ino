@@ -11,6 +11,7 @@
 #include <ArduinoJson.h>
 #include <ESP8266WebServer.h>
 #include <ESP8266HTTPClient.h>
+#include <ESP8266SSDP.h>
 #include <ArduinoOTA.h>
 #include "sha256.h"
 
@@ -1119,6 +1120,35 @@ void setup() {
 
     server->begin();
     Serial.println("HTTP Server started on port " + String(port));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Enable SSDP discoverability
+    server->on("/description.xml", []() {
+        SSDP.schema(server->client());
+
+    });
+    SSDP.setSchemaURL("description.xml");
+    SSDP.setHTTPPort(port);
+    SSDP.setName(String(host_name));
+    SSDP.setModelName("esp8266 "+String(host_name));
+    SSDP.setURL("/");
+    SSDP.begin();
+    SSDP.setDeviceType("upnp:rootdevice");
+
+
+
 
 
     Serial.println("Starting UDP");
