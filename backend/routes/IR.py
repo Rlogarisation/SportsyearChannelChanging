@@ -41,7 +41,7 @@ CHANNEL = channel to change to
 TYPE = tv type
 LENGTH = length of code to be sent
 """
-@IR.route("/set_channel")
+@IR.route("/set_channel", methods=['POST'])
 def test_post_with_body():
     data = request.get_json()
     IP = data['IP']
@@ -73,7 +73,7 @@ PORT = port number of arduino device
 TYPE = tv type
 LENGTH = length of code to be sent
 """
-@IR.route("/lower_volume")
+@IR.route("/lower_volume", methods=['POST'])
 def lower_volume():
     data = request.get_json()
     IP = data['IP']
@@ -102,7 +102,7 @@ PORT = port number of arduino device
 TYPE = tv type
 LENGTH = length of code to be sent
 """
-@IR.route("/raise_volume")
+@IR.route("/raise_volume", methods=['POST'])
 def raise_volume():
     data = request.get_json()
     IP = data['IP']
@@ -131,7 +131,7 @@ PORT = port number of arduino device
 TYPE = tv type
 LENGTH = length of code to be sent
 """
-@IR.route("/mute")
+@IR.route("/mute", methods=['POST'])
 def mute():
     data = request.get_json()
     IP = data['IP']
@@ -160,7 +160,7 @@ PORT = port number of arduino device
 TYPE = tv type
 LENGTH = length of code to be sent
 """
-@IR.route("/power")
+@IR.route("/power", methods=['POST'])
 def power():
     data = request.get_json()
     IP = data['IP']
@@ -189,7 +189,7 @@ PORT = port number of arduino device
 TYPE = tv type
 LENGTH = length of code to be sent
 """
-@IR.route("/raise_channel")
+@IR.route("/raise_channel", methods=['POST'])
 def raise_channel():
     data = request.get_json()
     IP = data['IP']
@@ -218,7 +218,7 @@ PORT = port number of arduino device
 TYPE = tv type
 LENGTH = length of code to be sent
 """
-@IR.route("/lower_channel")
+@IR.route("/lower_channel", methods=['POST'])
 def lower_channel():
     data = request.get_json()
     IP = data['IP']
