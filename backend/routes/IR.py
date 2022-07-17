@@ -1,6 +1,6 @@
 from werkzeug.exceptions import BadRequest
 from flask import Blueprint, request
-from json import requests
+import requests
 
 IR = Blueprint('IR', __name__, url_prefix='/ir/')
 
