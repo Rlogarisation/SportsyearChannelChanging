@@ -52,11 +52,17 @@ def load_tv_channels(uuid):
 
 ######################################## IR DATABASE FUNCTIONS ########################################
 def ir_load_blaster_data():
-    db = shelve.open('db\ir_storage')
-    tv_data = db['scan']
+    db = shelve.open('db/ir_storage')
+    try:
+        tv_data = db['scan']
+    except:
+        # new db with no key scan
+        db['scan'] = {}
+        tv_data = {}
+    db.close()
     return tv_data
 
 def ir_persist_blaster_data(new_store):
-    db = shelve.open('db\ir_storage')
+    db = shelve.open('db/ir_storage')
     db['scan'] = new_store
     db.close()

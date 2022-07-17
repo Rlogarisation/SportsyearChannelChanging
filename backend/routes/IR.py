@@ -17,6 +17,7 @@ def IRScan():
     LINES_IN_RESPONSE = 9
     devices = []
     found_devices_list = []
+    return_dict = {}
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         sock.settimeout(10)
@@ -35,7 +36,9 @@ def IRScan():
                         found_devices_list.append(address)
     except:
         sock.close()
-        return devices
+        for device in devices:
+            return_dict[device[0]] = {"ip_address":device[1], "port":device[2]}
+        return return_dict
 
 """
 Send GET request to ir/test_ir
@@ -52,16 +55,16 @@ def test_ir():
         current_data = ir_load_blaster_data()
         new_data = current_data.copy()
         updated = False
-
-        for device in ir_device_list:
-            if device not in current_data:
-                print(f'Adding [{device[0]}] with location [{device[1]}:{device[2]}] to database')
-                new_data.append(device)
+        print(ir_device_list)
+        for device in ir_device_list.keys():
+            if device not in current_data.keys():
+                print(f'Adding [{device}] with location [{device["ip_address"]}:{device["port"]}] to database')
+                new_data[device] = ir_device_list[device]
                 updated = True
         if updated:
             ir_persist_blaster_data(new_data)
         return {
-            "scan" : ir_load_blaster_data
+            "scan" : ir_load_blaster_data()
         }
     except:
         raise BadRequest("No blasters were scanned")
