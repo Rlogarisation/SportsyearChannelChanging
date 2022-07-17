@@ -41,12 +41,10 @@ def IRScan():
         return return_dict
 
 """
-Send GET request to ir/test_ir
-Body must include:
-IP = ip number of arduino device
-PORT = port number of arduino device
-code = hexadecimal code or an array of int
-passcode = passcode for sending requests
+Send GET request to ir/scan
+No Body is needed
+Returns a dictionary:
+Device_name: { "ip_address":<>, "port":<> }
 """
 @IR.route("/scan", methods=['GET'])
 def test_ir():
