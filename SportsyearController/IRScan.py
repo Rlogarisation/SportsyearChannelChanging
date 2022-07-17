@@ -9,7 +9,7 @@ def IRScan():
                         'HOST: 239.255.255.250:1900\r\n' +
                         'MAN: "ssdp:discover"\r\n' +
                         'MX: 10\r\n' +
-                        'ST: ssdp:all\r\n\r\n')
+                        'ST: upnp:rootdevice\r\n\r\n')
     BCAST_IP = '239.255.255.250'
     BCAST_PORT = 1900
     LINES_IN_RESPONSE = 9
