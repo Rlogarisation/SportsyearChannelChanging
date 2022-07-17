@@ -22,9 +22,9 @@
 
 // User settings are below here
 //+=============================================================================
-const bool getExternalIP = true;                               // Set to false to disable querying external IP
+const bool getExternalIP = true;                               // Set to false to disable querying external IP (NBU)
 
-const bool getTime = true;                                     // Set to false to disable querying for the time
+const bool getTime = true;                                     // Set to false to disable querying for the time (NBU)
 const int timeZone = -5;                                       // Timezone (-5 is EST)
 
 const bool enableMDNSServices = true;                          // Use mDNS services, must be enabled for ArduinoOTA
@@ -40,7 +40,7 @@ const int configpin = 5;
 
 const int ledpin = LED_BUILTIN;                                // Built in LED defined for WEMOS people
 const char *wifi_config_name = "IR Controller Configuration";
-const char serverName[] = "checkip.dyndns.org";
+const char serverName[] = "checkip.dyndns.org";  // NBU
 int port = 80;
 char host_name[20] = "";
 char port_str[6] = "80";
@@ -62,7 +62,7 @@ bool holdReceive = false;                                      // Flag to preven
 
 IRsend irsend1(pins1);
 
-const unsigned long resetfrequency = 259200000;                // 72 hours in milliseconds for external IP reset
+const unsigned long resetfrequency = 259200000;                // 72 hours in milliseconds for external IP reset (NBU)
 static const char ntpServerName[] = "time.google.com";
 unsigned int localPort = 8888;                                 // Local port to listen for UDP packets
 void sendNTPpacket(IPAddress &address);
@@ -72,14 +72,14 @@ WiFiUDP ntpUDP;
 bool _rc5toggle = false;
 bool _rc6toggle = false;
 
-char _ip[16] = "";
+char _ip[16] = ""; // NBU
 
-unsigned long lastupdate = 0;
+unsigned long lastupdate = 0; // (NBU)
 
-bool authError = false;
-time_t timeAuthError = 0;
-bool externalIPError = false;
-bool ntpError = false;
+bool authError = false; // NBU
+time_t timeAuthError = 0; // NBU
+bool externalIPError = false; // NBU
+bool ntpError = false; // NBU 
 
 class Code {
 public:
@@ -117,7 +117,7 @@ void saveConfigCallback () {
 
 //+=============================================================================
 // Valid EPOCH time retrieval
-//
+// (NBU)
 bool validEPOCH(time_t timenow) {
     if (timenow < 922838400) {
         Serial.println("Epoch time from timeServer is unexpectedly old, probably failed connection to the time server. Check your network settings");
