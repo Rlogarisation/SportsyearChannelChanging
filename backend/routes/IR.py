@@ -1,5 +1,6 @@
 from werkzeug.exceptions import BadRequest
 from flask import Blueprint, request
+from db.storage import ir_persist_blaster_data, ir_load_blaster_data
 import requests
 import socket
 
@@ -46,13 +47,24 @@ passcode = passcode for sending requests
 """
 @IR.route("/scan", methods=['GET'])
 def test_ir():
-    ir_device_list = IRScan()
-    r = requests.get(url = URL)
-    data = r.json()
-    print(data)
-    return {
-        'data' : data
-    }
+    try:
+        ir_device_list = IRScan()
+        current_data = ir_load_blaster_data()
+        new_data = current_data.copy()
+        updated = False
+
+        for device in ir_device_list:
+            if device not in current_data:
+                print(f'Adding [{device[0]}] with location [{device[1]}:{device[2]}] to database')
+                new_data.append(device)
+                updated = True
+        if updated:
+            ir_persist_blaster_data(new_data)
+        return {
+            "scan" : ir_load_blaster_data
+        }
+    except:
+        raise BadRequest("No blasters were scanned")
 
 """
 Send POST request to ir/set_channel
