@@ -1258,7 +1258,7 @@ String encoding(decode_results *results) {
 }
 
 //+=============================================================================
-// Code to string
+// Code to string (NBU)
 //
 void fullCode (decode_results *results)
 {
@@ -1424,7 +1424,7 @@ void sendCodePage(Code selCode, int httpcode){
 }
 
 //+=============================================================================
-// Code to JsonObject
+// Code to JsonObject (NBU)
 //
 void cvrtCode(Code& codeData, decode_results *results) {
     strncpy(codeData.data, uint64ToString(results->value, 16).c_str(), 40);
@@ -1531,7 +1531,7 @@ void rawblast(JsonArray &raw, int khz, int rdelay, int pulse, int pdelay, int re
 
     Serial.println("Transmission complete");
 }
-
+// (NBU)
 void copyCode (Code& c1, Code& c2) {
     strncpy(c2.data, c1.data, 40);
     strncpy(c2.encoding, c1.encoding, 14);
