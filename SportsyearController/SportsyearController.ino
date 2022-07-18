@@ -22,9 +22,6 @@
 
 // User settings are below here
 //+=============================================================================
-const bool getExternalIP = true;                               // Set to false to disable querying external IP (NBU)
-
-const bool getTime = true;                                     // Set to false to disable querying for the time (NBU)
 const int timeZone = -5;                                       // Timezone (-5 is EST)
 
 const bool enableMDNSServices = true;                          // Use mDNS services, must be enabled for ArduinoOTA
@@ -40,7 +37,6 @@ const int configpin = 5;
 
 const int ledpin = LED_BUILTIN;                                // Built in LED defined for WEMOS people
 const char *wifi_config_name = "IR Controller Configuration";
-const char serverName[] = "checkip.dyndns.org";  // NBU
 int port = 80;
 char host_name[20] = "";
 char port_str[6] = "80";
@@ -62,7 +58,6 @@ bool holdReceive = false;                                      // Flag to preven
 
 IRsend irsend1(pins1);
 
-const unsigned long resetfrequency = 259200000;                // 72 hours in milliseconds for external IP reset (NBU)
 static const char ntpServerName[] = "time.google.com";
 unsigned int localPort = 8888;                                 // Local port to listen for UDP packets
 void sendNTPpacket(IPAddress &address);
@@ -72,14 +67,7 @@ WiFiUDP ntpUDP;
 bool _rc5toggle = false;
 bool _rc6toggle = false;
 
-char _ip[16] = ""; // NBU
-
-unsigned long lastupdate = 0; // (NBU)
-
-bool authError = false; // NBU
-time_t timeAuthError = 0; // NBU
-bool externalIPError = false; // NBU
-bool ntpError = false; // NBU 
+char _ip[16] = "";
 
 class Code {
 public:
@@ -96,8 +84,6 @@ public:
 // Declare prototypes
 void sendCodePage(Code selCode);
 void sendCodePage(Code selCode, int httpcode);
-void cvrtCode(Code& codeData, decode_results *results);
-void copyCode (Code& c1, Code& c2);
 String GetPowerCode(String type);
 String GetLowerVolumeCode(String type);
 String GetRaiseVolumeCode(String type);
@@ -113,18 +99,6 @@ void irblastlong(String type, String dataStr, int dataStrLen, unsigned int len, 
 void saveConfigCallback () {
     Serial.println("Should save config");
     shouldSaveConfig = true;
-}
-
-//+=============================================================================
-// Valid EPOCH time retrieval
-// (NBU)
-bool validEPOCH(time_t timenow) {
-    if (timenow < 922838400) {
-        Serial.println("Epoch time from timeServer is unexpectedly old, probably failed connection to the time server. Check your network settings");
-        Serial.println(timenow);
-        return false;
-    }
-    return true;
 }
 
 //+=============================================================================
@@ -526,20 +500,9 @@ void setup() {
             root.clear();
         }
     });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////WEBSERVER ROUTES ////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // Power route
     server->on("/ir/power", []() {
@@ -1100,14 +1063,6 @@ void setup() {
         }
     });
 
-
-
-
-
-
-
-
-
     server->on("/", []() {
         Serial.println("Connection received endpoint '/'");
         String signature = server->arg("auth");
@@ -1120,20 +1075,6 @@ void setup() {
 
     server->begin();
     Serial.println("HTTP Server started on port " + String(port));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Enable SSDP discoverability
     server->on("/description.xml", []() {
         SSDP.schema(server->client());
@@ -1146,11 +1087,6 @@ void setup() {
     SSDP.setURL("/");
     SSDP.begin();
     SSDP.setDeviceType("upnp:rootdevice");
-
-
-
-
-
     Serial.println("Starting UDP");
     ntpUDP.begin(localPort);
     Serial.print("Local port: ");
@@ -1255,24 +1191,6 @@ IRsend pickIRsend (int out) {
 //
 String encoding(decode_results *results) {
   return typeToString(results->decode_type);
-}
-
-//+=============================================================================
-// Code to string (NBU)
-//
-void fullCode (decode_results *results)
-{
-    Serial.print("One line: ");
-    serialPrintUint64(results->value, 16);
-    Serial.print(":");
-    Serial.print(encoding(results));
-    Serial.print(":");
-    Serial.print(results->bits, DEC);
-    if (results->repeat) Serial.print(" (Repeat)");
-    Serial.println("");
-    if (results->overflow)
-        Serial.println("WARNING: IR code too long. "
-                    "Edit IRController.ino and increase captureBufSize");
 }
 
 //+=============================================================================
@@ -1424,37 +1342,12 @@ void sendCodePage(Code selCode, int httpcode){
 }
 
 //+=============================================================================
-// Code to JsonObject (NBU)
-//
-void cvrtCode(Code& codeData, decode_results *results) {
-    strncpy(codeData.data, uint64ToString(results->value, 16).c_str(), 40);
-    strncpy(codeData.encoding, encoding(results).c_str(), 14);
-    codeData.bits = results->bits;
-    String r = "";
-        for (uint16_t i = 1; i < results->rawlen; i++) {
-        r += results->rawbuf[i] * kRawTick;
-        if (i < results->rawlen - 1)
-            r += ",";                           // ',' not needed on last one
-        //if (!(i & 1)) r += " ";
-        }
-    codeData.raw = r;
-    if (results->decode_type != UNKNOWN) {
-        strncpy(codeData.address, ("0x" + String(results->address, HEX)).c_str(), 20);
-        strncpy(codeData.command, ("0x" + String(results->command, HEX)).c_str(), 40);
-    } else {
-        strncpy(codeData.address, "0x0", 20);
-        strncpy(codeData.command, "0x0", 40);
-    }
-}
-
-//+=============================================================================
 // Send IR codes to variety of sources
 //
 void irblast(String type, String dataStr, unsigned int len, int rdelay, int pulse, int pdelay, int repeat, long address, IRsend irsend) {
     Serial.println("Blasting off");
     type.toLowerCase();
     uint64_t data = strtoull(("0x" + dataStr).c_str(), 0, 0);
-    holdReceive = true;
     Serial.println("Blocking incoming IR signals");
     // Repeat Loop
     for (int r = 0; r < repeat; r++) {
@@ -1531,18 +1424,6 @@ void rawblast(JsonArray &raw, int khz, int rdelay, int pulse, int pdelay, int re
 
     Serial.println("Transmission complete");
 }
-// (NBU)
-void copyCode (Code& c1, Code& c2) {
-    strncpy(c2.data, c1.data, 40);
-    strncpy(c2.encoding, c1.encoding, 14);
-    //strncpy(c2.timestamp, c1.timestamp, 40);
-    strncpy(c2.address, c1.address, 20);
-    strncpy(c2.command, c1.command, 40);
-    c2.bits = c1.bits;
-    c2.raw = c1.raw;
-    c2.timestamp = c1.timestamp;
-    c2.valid = c1.valid;
-}
 
 String GetPowerCode(String type) {
     if (type == "NEC" || type == "LG") return "20DF10EF";
@@ -1588,6 +1469,6 @@ String GetLowerChannelCode(String type) {
 void loop() {
     ArduinoOTA.handle();
     server->handleClient();
-    decode_results  results;                                        // Somewhere to store the results
+    decode_results  results;
     delay(200);
 }
