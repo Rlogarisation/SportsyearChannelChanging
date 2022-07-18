@@ -47,7 +47,7 @@ Returns a dictionary:
 Device_name: { "ip_address":<>, "port":<> }
 """
 @IR.route("/scan", methods=['GET'])
-def test_ir():
+def ir_scan():
     try:
         ir_device_list = IRScan()
         current_data = ir_load_blaster_data()
@@ -77,7 +77,7 @@ TYPE = tv type
 LENGTH = length of code to be sent
 """
 @IR.route("/set_channel", methods=['POST'])
-def test_post_with_body():
+def ir_set_channel():
     data = request.get_json()
     IP = data['IP']
     PORT = data['PORT']
@@ -92,12 +92,8 @@ def test_post_with_body():
         "length" : data['LENGTH'],
     }
 
-    r = requests.post(URL, myobj)
-    data = r.json()
-    print(data)
-    return {
-        'data' : data
-    }
+    requests.post(URL, myobj)
+    return {}
 
 
 """
@@ -109,7 +105,7 @@ TYPE = tv type
 LENGTH = length of code to be sent
 """
 @IR.route("/lower_volume", methods=['POST'])
-def lower_volume():
+def ir_lower_volume():
     data = request.get_json()
     IP = data['IP']
     PORT = data['PORT']
@@ -122,12 +118,8 @@ def lower_volume():
         "length" : data['LENGTH'],
     }
 
-    r = requests.post(URL, myobj)
-    data = r.json()
-    print(data)
-    return {
-        'data' : data
-    }
+    requests.post(URL, myobj)
+    return {}
 
 """
 Send POST request to ir/raise_volume
@@ -138,7 +130,7 @@ TYPE = tv type
 LENGTH = length of code to be sent
 """
 @IR.route("/raise_volume", methods=['POST'])
-def raise_volume():
+def ir_raise_volume():
     data = request.get_json()
     IP = data['IP']
     PORT = data['PORT']
@@ -151,12 +143,8 @@ def raise_volume():
         "length" : data['LENGTH'],
     }
 
-    r = requests.post(URL, myobj)
-    data = r.json()
-    print(data)
-    return {
-        'data' : data
-    }
+    requests.post(URL, myobj)
+    return {}
 
 """
 Send POST request to ir/mute
@@ -167,7 +155,7 @@ TYPE = tv type
 LENGTH = length of code to be sent
 """
 @IR.route("/mute", methods=['POST'])
-def mute():
+def ir_mute():
     data = request.get_json()
     IP = data['IP']
     PORT = data['PORT']
@@ -180,12 +168,8 @@ def mute():
         "length" : data['LENGTH'],
     }
 
-    r = requests.post(URL, myobj)
-    data = r.json()
-    print(data)
-    return {
-        'data' : data
-    }
+    requests.post(URL, myobj)
+    return {}
 
 """
 Send POST request to ir/power
@@ -196,7 +180,7 @@ TYPE = tv type
 LENGTH = length of code to be sent
 """
 @IR.route("/power", methods=['POST'])
-def power():
+def ir_power():
     data = request.get_json()
     IP = data['IP']
     PORT = data['PORT']
@@ -209,12 +193,8 @@ def power():
         "length" : data['LENGTH'],
     }
 
-    r = requests.post(URL, myobj)
-    data = r.json()
-    print(data)
-    return {
-        'data' : data
-    }
+    requests.post(URL, myobj)
+    return {}
 
 """
 Send POST request to ir/raise_channel
@@ -225,7 +205,7 @@ TYPE = tv type
 LENGTH = length of code to be sent
 """
 @IR.route("/raise_channel", methods=['POST'])
-def raise_channel():
+def ir_raise_channel():
     data = request.get_json()
     IP = data['IP']
     PORT = data['PORT']
@@ -238,12 +218,8 @@ def raise_channel():
         "length" : data['LENGTH'],
     }
 
-    r = requests.post(URL, myobj)
-    data = r.json()
-    print(data)
-    return {
-        'data' : data
-    }
+    requests.post(URL, myobj)
+    return {}
 
 """
 Send POST request to ir/lower_channel
@@ -254,7 +230,7 @@ TYPE = tv type
 LENGTH = length of code to be sent
 """
 @IR.route("/lower_channel", methods=['POST'])
-def lower_channel():
+def ir_lower_channel():
     data = request.get_json()
     IP = data['IP']
     PORT = data['PORT']
@@ -267,9 +243,5 @@ def lower_channel():
         "length" : data['LENGTH'],
     }
 
-    r = requests.post(URL, myobj)
-    data = r.json()
-    print(data)
-    return {
-        'data' : data
-    }
+    requests.post(URL, myobj)
+    return {}
