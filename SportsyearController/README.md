@@ -34,15 +34,16 @@ Finding the libraries may be difficult but this is a byproduct of how bad the Ar
 ## Blaster Routes
 
 The blaster has the following routes:
-|Route|HTTP Method|Parameters|Description|
-| ----------- | ----------- | ----------- | ----------- |
-|/ir/set_channel|POST|channel, type,  length|Sets TV channel to specified number|
-|/ir/lower_volume|POST|type, length|Lower volume by 1|
-|/ir/raise_volume |POST|type, length|Raise volume by 1|
-|/ir/mute|POST|type, length|Mute Volume|
-|/ir/power|POST|type, length|Power TV on/off|
-|/ir/raise_channel/|POST|type, length|Raise channel by 1|
-|/ir/lower_channel/|POST|type, length|Lower channel by 1|
+|Route|HTTP Method|Parameters|Description|Return|
+| ----------- | ----------- | ----------- | ----------- | ----------- |
+|/ir/set_channel|POST|channel, type,  length|Sets TV channel to specified number|N/A|
+|/ir/lower_volume|POST|type, length|Lower volume by 1|N/A|
+|/ir/raise_volume |POST|type, length|Raise volume by 1|N/A|
+|/ir/mute|POST|type, length|Mute Volume|N/A|
+|/ir/power|POST|type, length|Power TV on/off|N/A|
+|/ir/raise_channel/|POST|type, length|Raise channel by 1|N/A|
+|/ir/lower_channel/|POST|type, length|Lower channel by 1|N/A|
+|/ir/scan/|GET|N/A|Scans for blasters on the network|{ Device_name : { ip : <>, port: <> } }|
 
 ## Resources For Developing IR Blaster Webserver
 
