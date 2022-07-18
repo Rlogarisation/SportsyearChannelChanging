@@ -23,6 +23,31 @@ h2 {
     font-size:20px;
 }
 
+#navBar {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+#navBar ul {
+    display: flex;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    color: var(--secondaryGreen);
+}
+
+#navBar li {
+    margin: 20px 5px 20px;
+}
+
+#navBar li:hover {
+    color: var(--primaryGreen);
+    font-weight: bold;
+    cursor: pointer;
+    align-items: center;
+}
+
 #changeChannelsSection {
     margin-top: 50%;
 }
@@ -91,12 +116,12 @@ table, td, th {
     animation: spin 2s linear infinite;
     display: none;
     margin-left: 20px;;
-  }
-  
+}
+
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-  }
+}
 
 #buttonFlex {
     display: flex;
@@ -106,4 +131,22 @@ table, td, th {
 #listTVs a {
     display: block;
     text-decoration: none;
+}
+
+@media only screen and (max-width: 650px) {
+    table {
+        font-size: 14px;
+    }
+
+    table, td, th {
+        padding: 5px;
+    }
+
+    .smlButton {
+        border: 4px solid var(--primaryGreen);
+        color: var(--primaryGreen);
+        border-radius: 15px;
+        font-weight: bold;
+        font-size: 14px;
+    }
 }
