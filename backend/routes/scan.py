@@ -106,7 +106,7 @@ def ScanTV():
         }
 
     except:
-        raise BadRequest("No TV's were scanned")
+        raise BadRequest("No TV was scanned")
 
 """
 Returns the list of TV Data in the database
