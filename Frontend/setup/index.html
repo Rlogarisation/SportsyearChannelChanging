@@ -8,11 +8,30 @@
     <title>TV Remote Control</title>
 </head>
 <body>
+    <div id="navBar">
+        <h2>Coogee Bay Hotel</h1>
+    </div>
     <h1>Setup</h1>
-    <div class="button">
-        Discover TVs
+    <div id="buttonFlex">
+        <div class="button" id="discoverButton">
+            Discover TVs
+        </div>
+        <div id="loader"></div>
     </div>
 
-    <script src="app.js"></script>
+    <div id="listTVs">
+        <table>
+            <tr>
+                <th>TV NAME</th>
+                <th>IP ADDRESS</th>
+                <th>UUID</th>
+                <th>CONTROL TV</th>
+                <th>REMOVE TV</th>
+            </tr>
+            <tbody id="tableData"></tbody>
+        </table>
+    </div>
+
+    <script src="setup.js"></script>
 </body>
 </html>

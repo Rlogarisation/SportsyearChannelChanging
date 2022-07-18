@@ -1,6 +1,6 @@
 // MMAN4010/MMAN4020 PROJECT 8 SPORTSYEAR BY ZHENG LUO(Z5206267)
 // TODO: MUST CHANGE VARIABLE BELOW:
-const FETCHURL = 'http://localhost:5005/';
+const FETCHURL = 'http://localhost:5000/';
 
 const volumeUpButton = document.getElementById("volumeUpButton");
 const volumeDownButton = document.getElementById("volumeDownButton");
