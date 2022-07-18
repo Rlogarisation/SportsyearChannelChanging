@@ -109,6 +109,21 @@ def ScanTV():
         raise BadRequest("No TV's were scanned")
 
 """
+Returns the list of TV Data in the database
+Method = GET
+"""
+@scan.route("/get_tvs", methods=['GET'])
+def get_tvs():
+    try:
+        current_data = load_tv_data()
+        return {
+            "tv_list" : current_data
+        }
+
+    except:
+        raise BadRequest("No TV's exist in Database")
+
+"""
 Remove tv with uuid from the database
 Method = DEL
 """
