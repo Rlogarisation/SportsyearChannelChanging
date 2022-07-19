@@ -1,6 +1,5 @@
 const FETCHURL = 'http://localhost:5000/';
 const controlUrl = `${window.location.href.slice(0,-17)}/control/index.html`;
-const discoverButton = document.getElementById("discoverButton");
 var tvs = {};
 
 // Load TV data into table
@@ -90,8 +89,6 @@ const discover = () => {
 const remove_tv = (uuid) => {
   console.log("DELETE BUTTON PRESSED");
   console.log(uuid)
-  // const formData = new FormData();
-  // formData.append('uuid', uuid);
   route = 'smart/remove_tv'
   fetch(`${FETCHURL}${route}`, {
     method: 'DELETE',
@@ -116,5 +113,3 @@ const remove_tv = (uuid) => {
     alert("Oops crashed due to " + err + " \n(Check server is running)");
   });
 }
-
-discoverButton.addEventListener("click", discover);

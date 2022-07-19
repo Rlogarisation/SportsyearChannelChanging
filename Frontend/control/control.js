@@ -1,81 +1,202 @@
-// MMAN4010/MMAN4020 PROJECT 8 SPORTSYEAR BY ZHENG LUO(Z5206267)
+// MMAN4010/MMAN4020 PROJECT 8 SPORTSYEAR
 // TODO: MUST CHANGE VARIABLE BELOW:
 const FETCHURL = 'http://localhost:5000/';
 
-const volumeUpButton = document.getElementById("volumeUpButton");
-const volumeDownButton = document.getElementById("volumeDownButton");
-const muteButton = document.getElementById("muteButton");
-const channelIncrementButton = document.getElementById("channelIncrementButton");
-const channelDecrementButton = document.getElementById("channelDecrementButton");
-const powerButton = document.getElementById("powerButton");
+const update_channels = (channels) => {
+  const channelDropdown = document.getElementById("channels");
 
-const fetchAPI = (method, header, body, path) => {
-  if (header === "default") {
-    header = { 'Content-Type': 'application/json' }
+  for (var i = 0; i < channels.length; i++) {
+    var opt = document.createElement('option');
+    opt.value = channels[i];
+    opt.innerHTML = `Channel ${channels[i]}`;
+    channelDropdown.appendChild(opt);
   }
-  const requestInfo = {
-    method: method,
-    headers: header,
-    body: body,
-  };
+}
 
-  return new Promise((resolve, reject) => {
-    fetch(FETCHURL + path, requestInfo)
-      .then((response) => {
-        if (response.status === 400 || response.status === 403) {
-          response.json().then((errorMes) => {
-            alert(errorMes['error']);
-            reject(errorMes['error']);
-          });
-        }
-        else if (response.status === 200) {
-          response.json().then((data) => {
-            resolve(data);
-          });
-        }
-      })
-      .catch((err)=>{
-        alert("Oops crashed due to" + err);
-      });
-  });
-
-};
+// Handle Error Messages from requests
+const handleResponse = (response) => {
+  response.text().then((err) => {
+    var errorMessage = err.match('<p>(.*)</p>')[1]
+    if (errorMessage) alert(`[${response.status} ${response.statusText}] ${errorMessage}`)
+    else alert(`[${response.status} ${response.statusText}]`)
+  })
+}
 
 const volumeIncrement = () => {
   console.log("VOLUME UP Pressed");
-  const jsonString = JSON.stringify({});
-  fetchAPI('POST', "default", jsonString, 'smart/raise_volume')
-    .then(() =>{
-      console.log("You Have Been Successfully VOLUME UP!");
+  route = 'smart/raise_volume'
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type' : 'application/json',
+      "Accept" : "application/json"
+    },
+    body: JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
     })
-    .catch((err) => {
-      alert("Oops API fetched failed due to" + err);
-    });
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        console.log("raise_volume success")
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
 }
 
 const volumeDecrement = () => {
   console.log("VOLUME DOWN!");
+  route = 'smart/lower_volume'
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type' : 'application/json',
+      "Accept" : "application/json"
+    },
+    body: JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        console.log("lower_volume success")
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
 }
 
-const muteFunction = () => {
+const mute = () => {
   console.log("MUTE!");
+  route = 'smart/mute'
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type' : 'application/json',
+      "Accept" : "application/json"
+    },
+    body: JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        console.log("mute success")
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
 }
 
 const channelIncrement = () => {
   console.log("CHANNEL += 1");
+  route = 'smart/raise_channel'
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type' : 'application/json',
+      "Accept" : "application/json"
+    },
+    body: JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        console.log("raise_channel success")
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
 }
 
 const channelDecrement = () => {
   console.log("CHANNEL -= 1");
+  route = 'smart/lower_channel'
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type' : 'application/json',
+      "Accept" : "application/json"
+    },
+    body: JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        console.log("lower_channel success")
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
 }
 
 const power = () => {
   console.log("POWER BUTTON PRESSED.");
 }
 
-volumeUpButton.addEventListener("click", volumeIncrement);
-volumeDownButton.addEventListener("click", volumeDecrement);
-muteButton.addEventListener("click", muteFunction);
-channelIncrementButton.addEventListener("click", channelIncrement);
-channelDecrementButton.addEventListener("click", channelDecrement);
-powerButton.addEventListener("click", power);
+// GET Request for list of available channels with uuid
+window.onload = channel_list = () => {
+  console.log("GETTING TV CHANNELS");
+  route = 'smart/channel_list';
+  uuid = sessionStorage.getItem('uuid');
+  fetch(`${FETCHURL}${route}/${uuid}`, {
+    method: 'GET'
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        console.log(data['list'])
+        update_channels(data['list'])
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
+}
+
+const setChannel = () => {
+  const select = document.getElementById('channels');
+  var id = select.options[select.selectedIndex].value
+  console.log(`Set Channel ${id}`);
+
+  route = 'smart/set_channel'
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type' : 'application/json',
+      "Accept" : "application/json"
+    },
+    body: JSON.stringify({
+      uuid : sessionStorage.getItem('uuid'),
+      channel_id : id
+    })
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        console.log("set_channel success")
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
+}

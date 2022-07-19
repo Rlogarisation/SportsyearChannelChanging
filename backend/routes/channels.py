@@ -72,6 +72,8 @@ def set_channel():
     data = request.get_json()
     channel_id = data['channel_id']
     uuid = data['uuid']
+    print(channel_id)
+    print(uuid)
     return _set_channel(channel_id, uuid)
 
 """
