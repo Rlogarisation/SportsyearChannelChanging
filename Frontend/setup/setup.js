@@ -18,7 +18,7 @@ const loadTVs = () => {
     cell = row.insertCell();
     cell.innerHTML = uuid;
     cell = row.insertCell();
-    cell.innerHTML = `<a class="smlButton" id="${uuid}" href="${frontend}">Control TV</a>`;
+    cell.innerHTML = `<a class="smlButton" id="${uuid}" href="${frontend}" onclick="sessionStorage.setItem('uuid', '${uuid}')">Control TV</a>`;
     cell = row.insertCell();
     cell.innerHTML = `<div class="smlButton" id="${uuid}" onclick="remove_tv('${uuid}')">Remove TV</div>`;
   }
@@ -49,6 +49,9 @@ window.onload = get_tvs = () => {
       });
     } else handleResponse(response);
   })
+  .catch((err)=>{
+    alert("Oops crashed due to" + err);
+  });
 }
 
 // GET Request to scan for new tvs, will return updated list of tv's
@@ -78,6 +81,10 @@ const discover = () => {
     } else handleResponse(response);
     document.getElementById("loader").style.display = "none";
   })
+  .catch((err)=>{
+    alert("Oops crashed due to" + err);
+    document.getElementById("loader").style.display = "none";
+  });
 }
 
 // DELETE Request to delete tv with uuid will return updated list of tv's
@@ -106,6 +113,9 @@ const remove_tv = (uuid) => {
       });
     } else handleResponse(response);
   })
+  .catch((err)=>{
+    alert("Oops crashed due to" + err);
+  });
 }
 
 discoverButton.addEventListener("click", discover);
