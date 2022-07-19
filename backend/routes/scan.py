@@ -76,7 +76,7 @@ def _remove_tv(uuid):
         persist_tv_data(data)
     except:
         raise BadRequest('UUID does not exist in Database')
-    return {}
+    return {'tv_list' : data}
 
 """
 Scan TV's, adding any extra TV's found to the existing list in the database
@@ -106,7 +106,22 @@ def ScanTV():
         }
 
     except:
-        raise BadRequest("No TV's were scanned")
+        raise BadRequest("No TV was scanned")
+
+"""
+Returns the list of TV Data in the database
+Method = GET
+"""
+@scan.route("/get_tvs", methods=['GET'])
+def get_tvs():
+    try:
+        current_data = load_tv_data()
+        return {
+            "tv_list" : current_data
+        }
+
+    except:
+        raise BadRequest("No TV's exist in Database")
 
 """
 Remove tv with uuid from the database

@@ -1,0 +1,46 @@
+<!--MMAN4010/MMAN4020 PROJECT 8 SPORTSYEAR-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../style.css">
+    <title>TV Setup</title>
+</head>
+<body>
+    <div id="navBar">
+        <a href="https://sportsyear.com.au">
+            <img src="../picture/SportsYear.jpg" alt="SportsYear Logo">
+        </a>
+        <h2>Coogee Bay Hotel</h2>
+        <ul>
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../control/index.html">TV Control</a></li>
+            <li><a href="../setup/index.html">Setup</a></li>
+            <li><a href="../schedule/index.html">Schedule</a></li>
+        </ul>
+    </div>
+    <h1>Setup</h1>
+    <div id="buttonFlex">
+        <div class="button" id="discoverButton">
+            Discover TVs
+        </div>
+        <div id="loader"></div>
+    </div>
+
+    <div id="listTVs">
+        <table>
+            <tr>
+                <th>TV NAME</th>
+                <th>IP ADDRESS</th>
+                <th>UUID</th>
+                <th>CONTROL TV</th>
+                <th>REMOVE TV</th>
+            </tr>
+            <tbody id="tableData"></tbody>
+        </table>
+    </div>
+
+    <script src="setup.js"></script>
+</body>
+</html>
