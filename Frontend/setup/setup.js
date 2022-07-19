@@ -1,6 +1,5 @@
 const FETCHURL = 'http://localhost:5000/';
-const frontend = "file:///C:/Users/Jack%20O'Leary/Documents/6th%20Year%20Uni/MMAN4010/SportsYear/Frontend/index.html"
-
+const controlUrl = `${window.location.href.slice(0,-17)}/control/index.html`;
 const discoverButton = document.getElementById("discoverButton");
 var tvs = {};
 
@@ -18,7 +17,7 @@ const loadTVs = () => {
     cell = row.insertCell();
     cell.innerHTML = uuid;
     cell = row.insertCell();
-    cell.innerHTML = `<a class="smlButton" id="${uuid}" href="${frontend}" onclick="sessionStorage.setItem('uuid', '${uuid}')">Control TV</a>`;
+    cell.innerHTML = `<a class="smlButton" id="${uuid}" href="${controlUrl}" onclick="sessionStorage.setItem('uuid', '${uuid}')">Control TV</a>`;
     cell = row.insertCell();
     cell.innerHTML = `<div class="smlButton" id="${uuid}" onclick="remove_tv('${uuid}')">Remove TV</div>`;
   }
@@ -50,7 +49,7 @@ window.onload = get_tvs = () => {
     } else handleResponse(response);
   })
   .catch((err)=>{
-    alert("Oops crashed due to" + err);
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
   });
 }
 
@@ -82,7 +81,7 @@ const discover = () => {
     document.getElementById("loader").style.display = "none";
   })
   .catch((err)=>{
-    alert("Oops crashed due to" + err);
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
     document.getElementById("loader").style.display = "none";
   });
 }
@@ -114,7 +113,7 @@ const remove_tv = (uuid) => {
     } else handleResponse(response);
   })
   .catch((err)=>{
-    alert("Oops crashed due to" + err);
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
   });
 }
 

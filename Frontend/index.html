@@ -1,40 +1,27 @@
-<!--MMAN4010/MMAN4020 PROJECT 8 SPORTSYEAR BY ZHENG LUO(Z5206267)-->
+<!--MMAN4010/MMAN4020 PROJECT 8 SPORTSYEAR-->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
-    <title>TV Remote Control</title>
+    <title>Schedule</title>
 </head>
 <body>
-    <h1>TV Control</h1>
-    <div id="changeChannelsSection">
-        <form>
-            <label for="channels">Change Channel</label>
-            <select name="channels" id="channels">
-                <option value="channel1">channel 1</option>
-                <option value="channel2">channel 2</option>
-                <option value="channel3">channel 3</option>
-                <option value="channel4">channel 4</option>
-            </select>
-            <input type="submit" value="Change">
-        </form>
+    <div id="navBar">
+        <a href="https://sportsyear.com.au">
+            <img src="picture/SportsYear.jpg" alt="SportsYear Logo">
+        </a>
+        <h2>Coogee Bay Hotel</h2>
+        <ul>
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./control/index.html">TV Control</a></li>
+            <li><a href="./setup/index.html">Setup</a></li>
+            <li><a href="./schedule/index.html">Schedule</a></li>
+        </ul>
     </div>
-    <div id="adjustmentSection">
-        <input type="image" id="volumeUpButton" src="picture/arrow.png" alt="volumeUp" height="100%" width="100%" style="transform:rotate(270deg);">
-        <input type="image" id="powerButton" src="picture/powerButton.png" alt="powerOnOff" height="100%" width="100%">
-        <input type="image" id="channelIncrementButton" src="picture/arrow.png" alt="channelUp" height="100%" width="100%" style="transform:rotate(270deg);">
+    <h1>Home</h1>
 
-        <img src="picture/sound.png" alt="sound" height="100%" width="100%">
-        <div></div>
-        <div id="ch">CH</div>
-
-        <input type="image" id="volumeDownButton" src="picture/arrow.png" alt="volumeDown" height="100%" width="100%" style="transform:rotate(90deg);">
-        <input type="image" id="muteButton" src="picture/mute.png" alt="mute" height="100%" width="100%">
-        <input type="image" id="channelDecrementButton" src="picture/arrow.png" alt="channelDown" height="100%" width="100%" style="transform:rotate(90deg);">
-
-    </div>
-    <script src="app.js"></script>
+    <script src="home.js"></script>
 </body>
 </html>
