@@ -106,8 +106,6 @@ def toggle_mute():
 Retreive current volume data from tv with uuid
 Method = GET
 """
-@audio.route("/get_volume", methods=['GET'])
-def get_volume():
-    data = request.get_json()
-    uuid = data['uuid']
+@audio.route("/get_volume/<uuid>", methods=['GET'])
+def get_volume(uuid):
     return _get_volume(uuid)
