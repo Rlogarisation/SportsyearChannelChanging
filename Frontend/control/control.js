@@ -2,7 +2,7 @@
 // TODO: MUST CHANGE VARIABLE BELOW:
 const FETCHURL = 'http://localhost:5000/';
 
-const update_channels = (channels) => {
+const updateChannels = (channels) => {
   const channelDropdown = document.getElementById("channels");
 
   for (var i = 0; i < channels.length; i++) {
@@ -11,6 +11,54 @@ const update_channels = (channels) => {
     opt.innerHTML = `Channel ${channels[i]}`;
     channelDropdown.appendChild(opt);
   }
+}
+
+const updateTv = (tvs) => {
+  const tvDropdown = document.getElementById("tv_list");
+
+  for (tv in tvs) {
+    var opt = document.createElement('option');
+    opt.value = tv;
+    opt.innerHTML = `TV ${tv}`;
+    tvDropdown.appendChild(opt);
+  }
+}
+
+window.onload = load = () => {
+  uuid = sessionStorage.getItem('uuid')
+  if (uuid === null || uuid === 'undefined') {
+    // No TV selected so default to first found
+    console.log(`catch`)
+    get_first_uuid();
+  } else {
+    channel_list();
+    const tv_display = document.getElementById('tv_display');
+    tv_display.innerHTML = sessionStorage.getItem('uuid')
+  }
+}
+
+const get_first_uuid = () => {
+  console.log("GETTING TV LIST");
+  route = 'smart/get_tvs'
+  fetch(`${FETCHURL}${route}`, {
+    method: 'GET',
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        console.log(data['tv_list']);
+        tvs = data['tv_list'];
+        uuid = Object.keys(tvs)[0];
+        sessionStorage.setItem('uuid', uuid);
+        channel_list();
+        const tv_display = document.getElementById('tv_display');
+        tv_display.innerHTML = uuid;
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
 }
 
 // Handle Error Messages from requests
@@ -148,22 +196,43 @@ const channelDecrement = () => {
 }
 
 const power = () => {
-  console.log("POWER BUTTON PRESSED.");
+  console.log("POWER BUTTON PRESSED");
+  route = 'smart/power_toggle'
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type' : 'application/json',
+      "Accept" : "application/json"
+    },
+    body: JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        console.log("power_toggle success")
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
 }
 
 // GET Request for list of available channels with uuid
-window.onload = channel_list = () => {
+const channel_list = () => {
   console.log("GETTING TV CHANNELS");
-  route = 'smart/channel_list';
+  route = 'smart/get_tvs';
   uuid = sessionStorage.getItem('uuid');
-  fetch(`${FETCHURL}${route}/${uuid}`, {
+  fetch(`${FETCHURL}${route}`, {
     method: 'GET'
   })
   .then((response) => {
     if (response.status === 200) {
       response.json().then((data) => {
-        console.log(data['list'])
-        update_channels(data['list'])
+        channels_list = Object.keys(data['tv_list'][uuid]['tv_channels']);
+        updateChannels(channels_list);
       });
     } else handleResponse(response);
   })
