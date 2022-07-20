@@ -90,8 +90,6 @@ const discover = () => {
 const remove_tv = (uuid) => {
   console.log("DELETE BUTTON PRESSED");
   console.log(uuid)
-  // const formData = new FormData();
-  // formData.append('uuid', uuid);
   route = 'smart/remove_tv'
   fetch(`${FETCHURL}${route}`, {
     method: 'DELETE',

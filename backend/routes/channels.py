@@ -46,8 +46,11 @@ def _channel_list(uuid):
     connect_client(client, uuid)
     tv_control = TvControl(client)
 
-    list = tv_control.channel_list()
-    return {"list" : list}
+    channel_data = tv_control.channel_list()["channelList"]
+    channel_list = []
+    for channel in channel_data:
+        channel_list.append(channel['channelNumber'])
+    return {"list" : channel_list}
 
 def _get_channel(uuid):
     # setup client
@@ -69,6 +72,8 @@ def set_channel():
     data = request.get_json()
     channel_id = data['channel_id']
     uuid = data['uuid']
+    print(channel_id)
+    print(uuid)
     return _set_channel(channel_id, uuid)
 
 """

@@ -19,9 +19,14 @@ def _power_off(uuid):
 
 def _power_on(uuid):
     send_magic_packet(str(load_mac(uuid)), ip_address=load_ip(uuid))
-    # send_magic_packet("b4:b2:91:41:7e:32")
     print(str(load_mac(uuid)))
     return {}
+
+def _power_toggle(uuid):
+    try:
+        return _power_off(uuid)
+    except:
+        return _power_on(uuid)
 
 def _screen_off(uuid):
     # setup client
@@ -44,7 +49,7 @@ def _screen_on(uuid):
 # POWER ROUTES BELOW
 
 """
-Turn tv with uuid off
+Turn TV with uuid off
 Method = POST
 """
 @power.route("/power_off", methods=['POST'])
@@ -54,7 +59,7 @@ def power_off():
     return _power_off(uuid)
 
 """
-Turn tv with uuid on
+Turn TV with uuid on
 Method = POST
 """
 @power.route("/power_on", methods=['POST'])
@@ -64,7 +69,17 @@ def power_on():
     return _power_on(uuid)
 
 """
-Turn tv screen with uuid OFF
+Toggle TV ON/OFF
+Method = POST
+"""
+@power.route("/power_toggle", methods=['POST'])
+def power_toggle():
+    data = request.get_json()
+    uuid = data['uuid']
+    return _power_toggle(uuid)
+
+"""
+Turn TV screen with uuid OFF
 Method = POST
 """
 @power.route("/screen_off", methods=['POST'])
@@ -72,9 +87,9 @@ def screen_off():
     data = request.get_json()
     uuid = data['uuid']
     return _screen_off(uuid)
-    
+
 """
-Turn tv screen with uuid ON
+Turn TV screen with uuid ON
 Method = POST
 """
 @power.route("/screen_on", methods=['POST'])
