@@ -40,6 +40,41 @@ def IRScan():
             return_dict[device[0]] = {"ip_address":device[1], "port":device[2]}
         return return_dict
 
+def _ir_set_channel(IP, PORT, CHANNEL, TYPE, LENGTH):
+    URL = f'http://{IP}:{PORT}/ir/set_channel?channel={CHANNEL}&type={TYPE}&length={LENGTH}'
+    requests.post(URL)
+    return {}
+
+def _ir_lower_volume(IP, PORT, TYPE, LENGTH):
+    URL = f'http://{IP}:{PORT}/ir/lower_volume?type={TYPE}&length={LENGTH}'
+    requests.post(URL)
+    return {}
+
+def _ir_raise_volume(IP, PORT, TYPE, LENGTH):
+    URL = f'http://{IP}:{PORT}/ir/raise_volume?type={TYPE}&length={LENGTH}'
+    requests.post(URL)
+    return {}
+
+def _ir_mute(IP, PORT, TYPE, LENGTH):
+    URL = f'http://{IP}:{PORT}/ir/mute?type={TYPE}&length={LENGTH}'
+    requests.post(URL)
+    return {}
+
+def _ir_power(IP, PORT, TYPE, LENGTH):
+    URL = f'http://{IP}:{PORT}/ir/power?type={TYPE}&length={LENGTH}'
+    requests.post(URL)
+    return {}
+
+def _ir_raise_channel(IP, PORT, TYPE, LENGTH):
+    URL = f'http://{IP}:{PORT}/ir/raise_channel?type={TYPE}&length={LENGTH}'
+    requests.post(URL)
+    return {}
+
+def _ir_lower_channel(IP, PORT, TYPE, LENGTH):
+    URL = f'http://{IP}:{PORT}/ir/lower_channel?type={TYPE}&length={LENGTH}'
+    requests.post(URL)
+    return {}
+
 """
 Send GET request to ir/scan
 No Body is needed
@@ -84,16 +119,7 @@ def ir_set_channel():
     CHANNEL = data['CHANNEL']
     TYPE = data['TYPE']
     LENGTH = data['LENGTH']
-
-    URL = f'http://{IP}:{PORT}/ir/set_channel?channel={CHANNEL}&type={TYPE}&length={LENGTH}'
-    myobj = {
-        "channel" : data['CHANNEL'],
-        "type" : data['TYPE'],
-        "length" : data['LENGTH'],
-    }
-
-    requests.post(URL, myobj)
-    return {}
+    return _ir_set_channel(IP, PORT, CHANNEL, TYPE, LENGTH)
 
 
 """
@@ -111,15 +137,7 @@ def ir_lower_volume():
     PORT = data['PORT']
     TYPE = data['TYPE']
     LENGTH = data['LENGTH']
-
-    URL = f'http://{IP}:{PORT}/ir/lower_volume?type={TYPE}&length={LENGTH}'
-    myobj = {
-        "type" : data['TYPE'],
-        "length" : data['LENGTH'],
-    }
-
-    requests.post(URL, myobj)
-    return {}
+    return _ir_lower_volume(IP, PORT, TYPE, LENGTH)
 
 """
 Send POST request to ir/raise_volume
@@ -136,15 +154,7 @@ def ir_raise_volume():
     PORT = data['PORT']
     TYPE = data['TYPE']
     LENGTH = data['LENGTH']
-
-    URL = f'http://{IP}:{PORT}/ir/raise_volume?type={TYPE}&length={LENGTH}'
-    myobj = {
-        "type" : data['TYPE'],
-        "length" : data['LENGTH'],
-    }
-
-    requests.post(URL, myobj)
-    return {}
+    return _ir_raise_volume(IP, PORT, TYPE, LENGTH)
 
 """
 Send POST request to ir/mute
@@ -161,15 +171,7 @@ def ir_mute():
     PORT = data['PORT']
     TYPE = data['TYPE']
     LENGTH = data['LENGTH']
-
-    URL = f'http://{IP}:{PORT}/ir/mute?type={TYPE}&length={LENGTH}'
-    myobj = {
-        "type" : data['TYPE'],
-        "length" : data['LENGTH'],
-    }
-
-    requests.post(URL, myobj)
-    return {}
+    return _ir_mute(IP, PORT, TYPE, LENGTH)
 
 """
 Send POST request to ir/power
@@ -186,15 +188,7 @@ def ir_power():
     PORT = data['PORT']
     TYPE = data['TYPE']
     LENGTH = data['LENGTH']
-
-    URL = f'http://{IP}:{PORT}/ir/power?type={TYPE}&length={LENGTH}'
-    myobj = {
-        "type" : data['TYPE'],
-        "length" : data['LENGTH'],
-    }
-
-    requests.post(URL, myobj)
-    return {}
+    return _ir_power(IP, PORT, TYPE, LENGTH)
 
 """
 Send POST request to ir/raise_channel
@@ -211,15 +205,7 @@ def ir_raise_channel():
     PORT = data['PORT']
     TYPE = data['TYPE']
     LENGTH = data['LENGTH']
-
-    URL = f'http://{IP}:{PORT}/ir/raise_channel?type={TYPE}&length={LENGTH}'
-    myobj = {
-        "type" : data['TYPE'],
-        "length" : data['LENGTH'],
-    }
-
-    requests.post(URL, myobj)
-    return {}
+    return _ir_raise_channel(IP, PORT, TYPE, LENGTH)
 
 """
 Send POST request to ir/lower_channel
@@ -236,12 +222,4 @@ def ir_lower_channel():
     PORT = data['PORT']
     TYPE = data['TYPE']
     LENGTH = data['LENGTH']
-
-    URL = f'http://{IP}:{PORT}/ir/lower_channel?type={TYPE}&length={LENGTH}'
-    myobj = {
-        "type" : data['TYPE'],
-        "length" : data['LENGTH'],
-    }
-
-    requests.post(URL, myobj)
-    return {}
+    return _ir_lower_channel(IP, PORT, TYPE, LENGTH)
