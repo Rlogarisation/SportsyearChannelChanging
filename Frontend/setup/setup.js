@@ -12,30 +12,42 @@ const loadTVs = (isIR) => {
   tableData.innerHTML = "";
   const tableTitle = document.getElementById("tableTitle");
   const discoverButton = document.getElementById("discoverButton");
-  const uuidPortHeading = document.getElementById("uuidPortHeading");
+  const uuidProtocolHeading = document.getElementById("uuidProtocolHeading");
+  const ipHeading = document.getElementById("ipHeading");
   if (isIR) {
     tableTitle.innerHTML = "IR Remotes";
     discoverButton.innerHTML = "Discover Remotes";
-    uuidPortHeading.innerHTML = "PORT";
+    uuidProtocolHeading.innerHTML = "PROTOCOL";
+    ipHeading.innerHTML = "IP:PORT";
     for(device_name in remotes) {
-      console.log(device_name)
+      try {
+        var remote_protocol = remotes[device_name]['type'];
+      } catch {
+        var remote_protocol = 'nec';
+      }
+      console.log(remotes);
       var row = tableData.insertRow();
       var cell = row.insertCell();
       cell.innerHTML = device_name;
       cell = row.insertCell();
-      cell.innerHTML = remotes[device_name]['ip_address'];
+      cell.innerHTML = remotes[device_name]['ip_address'] + ':' + remotes[device_name]['port'];
       cell = row.insertCell();
-      cell.innerHTML = remotes[device_name]['port'];;
+      cell.innerHTML = `<select name="tvProtocols" id="tvProtocols_${device_name}" onchange="update_protocol('${device_name}')">
+                          <option value="NEC"  ${remote_protocol=='NEC' ? 'selected' : ''}>NEC</option>
+                          <option value="PANASONIC" ${remote_protocol=='PANASONIC' ? 'selected' : ''}>Panasonic</option>
+                          <option value="SONY"  ${remote_protocol=='SONY' ? 'selected' : ''}>Sony</option>
+                        </select>`;
       cell = row.insertCell();
-      cell.innerHTML = `<a class="smlButton" id="${device_name}" href="${controlUrl}">Control TV</a>`;
+      cell.innerHTML = `<a class="smlButton" id="control_${device_name}" href="${controlUrl}">Control TV</a>`;
       cell.addEventListener("click", saveIR(device_name, remotes))
       cell = row.insertCell();
-      cell.innerHTML = `<div class="smlButton" id="${device_name}" onclick="remove_tv('${device_name}')">Remove TV</div>`;
+      cell.innerHTML = `<div class="smlButton" id="remove_${device_name}" onclick="remove_tv('${device_name}')">Remove TV</div>`;
     }
   } else {
     tableTitle.innerHTML = "Smart TVs";
     discoverButton.innerHTML = "Discover TVs";
-    uuidPortHeading.innerHTML = "UUID";
+    uuidProtocolHeading.innerHTML = "UUID";
+    ipHeading.innerHTML = "IP ADDRESS";
     for(uuid in tvs) {
       var row = tableData.insertRow();
       var cell = row.insertCell();
@@ -52,12 +64,40 @@ const loadTVs = (isIR) => {
   }
 }
 
+const update_protocol = (device_name) => {
+  const dropdown = document.getElementById('tvProtocols_' + device_name);
+  console.log(device_name)
+  console.log(dropdown)
+  const new_protocol = dropdown.options[dropdown.selectedIndex].value;
+  route = 'ir/brand'
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type' : 'application/json',
+      "Accept" : "application/json"
+    },
+    body: JSON.stringify({
+      DEVICE_NAME : device_name,
+      TYPE : new_protocol
+    })
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        console.log("Update protocol success")
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
+}
+
 const saveIR = (device_name, remotes) => {
-  var device_ip = remotes[device_name]['ip_address'];
-  var device_port = remotes[device_name]['port'];
   sessionStorage.setItem("remote_name", device_name);
   sessionStorage.setItem("remote_ip", remotes[device_name]['ip_address']);
   sessionStorage.setItem("remote_port", remotes[device_name]['port']);
+  sessionStorage.setItem("remote_protocol", remotes[device_name]['type']);
 }
 
 // Handle Error Messages from requests
@@ -70,8 +110,6 @@ const handleResponse = (response) => {
 }
 
 window.onload = remember_ir_slider = () => {
-  console.log('here')
-  console.log(sessionStorage.getItem("isIR"))
   if (sessionStorage.getItem("isIR") == 'true') {
     document.getElementById("remoteSlider").checked = true;
   }
