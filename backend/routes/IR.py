@@ -40,38 +40,38 @@ def IRScan():
             return_dict[device[0]] = {"ip_address":device[1], "port":device[2]}
         return return_dict
 
-def _ir_set_channel(IP, PORT, CHANNEL, TYPE, LENGTH):
-    URL = f'http://{IP}:{PORT}/ir/set_channel?channel={CHANNEL}&type={TYPE}&length={LENGTH}'
+def _ir_set_channel(IP, PORT, CHANNEL, TYPE):
+    URL = f'http://{IP}:{PORT}/ir/set_channel?channel={CHANNEL}&type={TYPE}'
     requests.post(URL)
     return {}
 
-def _ir_lower_volume(IP, PORT, TYPE, LENGTH):
-    URL = f'http://{IP}:{PORT}/ir/lower_volume?type={TYPE}&length={LENGTH}'
+def _ir_lower_volume(IP, PORT, TYPE):
+    URL = f'http://{IP}:{PORT}/ir/lower_volume?type={TYPE}'
     requests.post(URL)
     return {}
 
-def _ir_raise_volume(IP, PORT, TYPE, LENGTH):
-    URL = f'http://{IP}:{PORT}/ir/raise_volume?type={TYPE}&length={LENGTH}'
+def _ir_raise_volume(IP, PORT, TYPE):
+    URL = f'http://{IP}:{PORT}/ir/raise_volume?type={TYPE}'
     requests.post(URL)
     return {}
 
-def _ir_mute(IP, PORT, TYPE, LENGTH):
-    URL = f'http://{IP}:{PORT}/ir/mute?type={TYPE}&length={LENGTH}'
+def _ir_mute(IP, PORT, TYPE):
+    URL = f'http://{IP}:{PORT}/ir/mute?type={TYPE}'
     requests.post(URL)
     return {}
 
-def _ir_power(IP, PORT, TYPE, LENGTH):
-    URL = f'http://{IP}:{PORT}/ir/power?type={TYPE}&length={LENGTH}'
+def _ir_power(IP, PORT, TYPE):
+    URL = f'http://{IP}:{PORT}/ir/power?type={TYPE}'
     requests.post(URL)
     return {}
 
-def _ir_raise_channel(IP, PORT, TYPE, LENGTH):
-    URL = f'http://{IP}:{PORT}/ir/raise_channel?type={TYPE}&length={LENGTH}'
+def _ir_raise_channel(IP, PORT, TYPE):
+    URL = f'http://{IP}:{PORT}/ir/raise_channel?type={TYPE}'
     requests.post(URL)
     return {}
 
-def _ir_lower_channel(IP, PORT, TYPE, LENGTH):
-    URL = f'http://{IP}:{PORT}/ir/lower_channel?type={TYPE}&length={LENGTH}'
+def _ir_lower_channel(IP, PORT, TYPE):
+    URL = f'http://{IP}:{PORT}/ir/lower_channel?type={TYPE}'
     requests.post(URL)
     return {}
 
@@ -109,7 +109,6 @@ IP = ip number of arduino device
 PORT = port number of arduino device
 CHANNEL = channel to change to
 TYPE = tv type
-LENGTH = length of code to be sent
 """
 @IR.route("/set_channel", methods=['POST'])
 def ir_set_channel():
@@ -118,8 +117,7 @@ def ir_set_channel():
     PORT = data['PORT']
     CHANNEL = data['CHANNEL']
     TYPE = data['TYPE']
-    LENGTH = data['LENGTH']
-    return _ir_set_channel(IP, PORT, CHANNEL, TYPE, LENGTH)
+    return _ir_set_channel(IP, PORT, CHANNEL, TYPE)
 
 
 """
@@ -128,7 +126,6 @@ Body must include:
 IP = ip number of arduino device
 PORT = port number of arduino device
 TYPE = tv type
-LENGTH = length of code to be sent
 """
 @IR.route("/lower_volume", methods=['POST'])
 def ir_lower_volume():
@@ -136,8 +133,7 @@ def ir_lower_volume():
     IP = data['IP']
     PORT = data['PORT']
     TYPE = data['TYPE']
-    LENGTH = data['LENGTH']
-    return _ir_lower_volume(IP, PORT, TYPE, LENGTH)
+    return _ir_lower_volume(IP, PORT, TYPE)
 
 """
 Send POST request to ir/raise_volume
@@ -145,7 +141,6 @@ Body must include:
 IP = ip number of arduino device
 PORT = port number of arduino device
 TYPE = tv type
-LENGTH = length of code to be sent
 """
 @IR.route("/raise_volume", methods=['POST'])
 def ir_raise_volume():
@@ -153,8 +148,7 @@ def ir_raise_volume():
     IP = data['IP']
     PORT = data['PORT']
     TYPE = data['TYPE']
-    LENGTH = data['LENGTH']
-    return _ir_raise_volume(IP, PORT, TYPE, LENGTH)
+    return _ir_raise_volume(IP, PORT, TYPE)
 
 """
 Send POST request to ir/mute
@@ -162,7 +156,6 @@ Body must include:
 IP = ip number of arduino device
 PORT = port number of arduino device
 TYPE = tv type
-LENGTH = length of code to be sent
 """
 @IR.route("/mute", methods=['POST'])
 def ir_mute():
@@ -170,8 +163,7 @@ def ir_mute():
     IP = data['IP']
     PORT = data['PORT']
     TYPE = data['TYPE']
-    LENGTH = data['LENGTH']
-    return _ir_mute(IP, PORT, TYPE, LENGTH)
+    return _ir_mute(IP, PORT, TYPE)
 
 """
 Send POST request to ir/power
@@ -179,7 +171,6 @@ Body must include:
 IP = ip number of arduino device
 PORT = port number of arduino device
 TYPE = tv type
-LENGTH = length of code to be sent
 """
 @IR.route("/power", methods=['POST'])
 def ir_power():
@@ -187,8 +178,7 @@ def ir_power():
     IP = data['IP']
     PORT = data['PORT']
     TYPE = data['TYPE']
-    LENGTH = data['LENGTH']
-    return _ir_power(IP, PORT, TYPE, LENGTH)
+    return _ir_power(IP, PORT, TYPE)
 
 """
 Send POST request to ir/raise_channel
@@ -196,7 +186,6 @@ Body must include:
 IP = ip number of arduino device
 PORT = port number of arduino device
 TYPE = tv type
-LENGTH = length of code to be sent
 """
 @IR.route("/raise_channel", methods=['POST'])
 def ir_raise_channel():
@@ -204,8 +193,7 @@ def ir_raise_channel():
     IP = data['IP']
     PORT = data['PORT']
     TYPE = data['TYPE']
-    LENGTH = data['LENGTH']
-    return _ir_raise_channel(IP, PORT, TYPE, LENGTH)
+    return _ir_raise_channel(IP, PORT, TYPE)
 
 """
 Send POST request to ir/lower_channel
@@ -213,7 +201,6 @@ Body must include:
 IP = ip number of arduino device
 PORT = port number of arduino device
 TYPE = tv type
-LENGTH = length of code to be sent
 """
 @IR.route("/lower_channel", methods=['POST'])
 def ir_lower_channel():
@@ -221,5 +208,4 @@ def ir_lower_channel():
     IP = data['IP']
     PORT = data['PORT']
     TYPE = data['TYPE']
-    LENGTH = data['LENGTH']
-    return _ir_lower_channel(IP, PORT, TYPE, LENGTH)
+    return _ir_lower_channel(IP, PORT, TYPE)
