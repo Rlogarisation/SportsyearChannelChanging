@@ -223,3 +223,18 @@ def ir_lower_channel():
     TYPE = data['TYPE']
     LENGTH = data['LENGTH']
     return _ir_lower_channel(IP, PORT, TYPE, LENGTH)
+
+"""
+Returns the list of IR Remotes in the database
+Method = GET
+"""
+@IR.route("/get_remotes", methods=['GET'])
+def get_remotes():
+    try:
+        current_data = ir_load_blaster_data()
+        return {
+            "ir_remotes" : current_data
+        }
+
+    except:
+        raise BadRequest("No TV's exist in Database")

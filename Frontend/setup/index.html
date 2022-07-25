@@ -21,8 +21,24 @@
         </ul>
     </div>
     <h1>Setup</h1>
+    <div class="sliderButton">
+        <div>Smart TV</div>
+        <label class="switch">
+            <input type="checkbox" id="remoteSlider">
+            <span class="slider round"></span>
+        </label>
+        <div>IR Remote</div>
+    </div>
+    <div class="sliderButton">
+        <div>Manual</div>
+        <label class="switch">
+            <input type="checkbox" id="automateSlider">
+            <span class="slider round"></span>
+        </label>
+        <div>Automate</div>
+    </div>
     <div id="buttonFlex">
-        <div class="button" id="discoverButton">
+        <div class="button" id="discoverButton" onclick="discover()">
             Discover TVs
         </div>
         <div id="loader"></div>
@@ -30,10 +46,11 @@
 
     <div id="listTVs">
         <table>
+            <th colspan="5" id="tableTitle">Smart TVs</th>
             <tr>
                 <th>TV NAME</th>
                 <th>IP ADDRESS</th>
-                <th>UUID</th>
+                <th id="uuidPortHeading">UUID</th>
                 <th>CONTROL TV</th>
                 <th>REMOVE TV</th>
             </tr>
