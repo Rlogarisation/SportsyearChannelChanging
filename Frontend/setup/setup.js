@@ -18,7 +18,7 @@ const loadTVs = (isIR) => {
     discoverButton.innerHTML = "Discover Remotes";
     uuidPortHeading.innerHTML = "PORT";
     for(device_name in remotes) {
-      var deviceObject = {device_name : remotes[device_name]}
+      console.log(device_name)
       var row = tableData.insertRow();
       var cell = row.insertCell();
       cell.innerHTML = device_name;
@@ -27,9 +27,10 @@ const loadTVs = (isIR) => {
       cell = row.insertCell();
       cell.innerHTML = remotes[device_name]['port'];;
       cell = row.insertCell();
-      cell.innerHTML = `<a class="smlButton" id="${device_name}" href="${controlUrl}" onclick="sessionStorage.setItem('ir', '${deviceObject}')">Control TV</a>`;
+      cell.innerHTML = `<a class="smlButton" id="${device_name}" href="${controlUrl}">Control TV</a>`;
+      cell.addEventListener("click", saveIR(device_name, remotes))
       cell = row.insertCell();
-      cell.innerHTML = `<div class="smlButton" id="${uuid}" onclick="remove_tv('${device_name}')">Remove TV</div>`;
+      cell.innerHTML = `<div class="smlButton" id="${device_name}" onclick="remove_tv('${device_name}')">Remove TV</div>`;
     }
   } else {
     tableTitle.innerHTML = "Smart TVs";
@@ -51,6 +52,14 @@ const loadTVs = (isIR) => {
   }
 }
 
+const saveIR = (device_name, remotes) => {
+  var device_ip = remotes[device_name]['ip_address'];
+  var device_port = remotes[device_name]['port'];
+  sessionStorage.setItem("remote_name", device_name);
+  sessionStorage.setItem("remote_ip", remotes[device_name]['ip_address']);
+  sessionStorage.setItem("remote_port", remotes[device_name]['port']);
+}
+
 // Handle Error Messages from requests
 const handleResponse = (response) => {
   response.text().then((err) => {
@@ -60,8 +69,17 @@ const handleResponse = (response) => {
   })
 }
 
+window.onload = remember_ir_slider = () => {
+  console.log('here')
+  console.log(sessionStorage.getItem("isIR"))
+  if (sessionStorage.getItem("isIR") == 'true') {
+    document.getElementById("remoteSlider").checked = true;
+  }
+  get_tvs()
+}
+
 // GET Request for current database tv list
-window.onload = get_tvs = () => {
+const get_tvs = () => {
   console.log("GETTING TV LIST");
   isIR = document.getElementById("remoteSlider").checked;
   if (isIR) route = 'ir/get_remotes'
@@ -171,7 +189,7 @@ const remove_tv = (uuid) => {
         response.json().then((data) => {
           console.log(data)
           tvs = data['tv_list']
-          loadTVs();
+          loadTVs(isIR);
         });
       } else handleResponse(response);
     })
