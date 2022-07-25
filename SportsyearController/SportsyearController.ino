@@ -91,6 +91,7 @@ String GetMuteCode(String type);
 String GetCodeFromNumber(char channel, String type);
 String GetRaiseChannelCode(String type);
 String GetLowerChannelCode(String type);
+int GetLength(String type);
 void irblastlong(String type, String dataStr, int dataStrLen, unsigned int len, int rdelay, int pulse, int pdelay, int repeat, long address, IRsend irsend);
 
 //+=============================================================================
@@ -565,11 +566,7 @@ void setup() {
 
         if (server->hasArg("type")) {
             String type = server->arg("type");
-            if (server->hasArg("length")) {
-                len = server->arg("length").toInt();
-            } else {
-                len = 32;
-            }
+            len = GetLength(type);
             String code = GetPowerCode(type);
             irblast(type, code, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
         }
@@ -645,11 +642,7 @@ void setup() {
 
         if (server->hasArg("type")) {
             String type = server->arg("type");
-            if (server->hasArg("length")) {
-                len = server->arg("length").toInt();
-            } else {
-                len = 32;
-            }
+            len = GetLength(type);
             String code = GetLowerVolumeCode(type);
             irblast(type, code, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
         }
@@ -725,11 +718,7 @@ void setup() {
 
         if (server->hasArg("type")) {
             String type = server->arg("type");
-            if (server->hasArg("length")) {
-                len = server->arg("length").toInt();
-            } else {
-                len = 32;
-            }
+            len = GetLength(type);
             String code = GetRaiseVolumeCode(type);
             irblast(type, code, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
         }
@@ -805,11 +794,7 @@ void setup() {
 
         if (server->hasArg("type")) {
             String type = server->arg("type");
-            if (server->hasArg("length")) {
-                len = server->arg("length").toInt();
-            } else {
-                len = 32;
-            }
+            len = GetLength(type);
             String code = GetMuteCode(type);
             irblast(type, code, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
         }
@@ -884,11 +869,7 @@ void setup() {
         int out = (server->hasArg("out")) ? server->arg("out").toInt() : 1;
         if (server->hasArg("channel")) {
             String channel = server->arg("channel");
-            if (server->hasArg("length")) {
-                len = server->arg("length").toInt();
-            } else {
-                len = 32;
-            }
+            len = GetLength(type);
             int expectedChannelLength = channel.length();
             irblastlong(type, channel, expectedChannelLength, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
         }
@@ -964,11 +945,7 @@ void setup() {
 
         if (server->hasArg("type")) {
             String type = server->arg("type");
-            if (server->hasArg("length")) {
-                len = server->arg("length").toInt();
-            } else {
-                len = 32;
-            }
+            len = GetLength(type);
             String code = GetRaiseChannelCode(type);
             irblast(type, code, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
         }
@@ -1044,11 +1021,7 @@ void setup() {
 
         if (server->hasArg("type")) {
             String type = server->arg("type");
-            if (server->hasArg("length")) {
-                len = server->arg("length").toInt();
-            } else {
-                len = 32;
-            }
+            len = GetLength(type);
             String code = GetLowerChannelCode(type);
             irblast(type, code, len, rdelay, pulse, pdelay, repeat, address, pickIRsend(out));
         }
@@ -1464,6 +1437,10 @@ String GetRaiseChannelCode(String type) {
 
 String GetLowerChannelCode(String type) {
     if (type == "NEC" || type == "LG") return "20DF807F";
+}
+
+int GetLength(String type) {
+    if (type == "NEC" || type == "LG") return 32;
 }
 
 void loop() {
