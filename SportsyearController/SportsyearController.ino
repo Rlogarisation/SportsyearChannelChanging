@@ -91,7 +91,7 @@ String GetMuteCode(String type);
 String GetCodeFromNumber(char channel, String type);
 String GetRaiseChannelCode(String type);
 String GetLowerChannelCode(String type);
-Int GetLength(String type);
+int GetLength(String type);
 void irblastlong(String type, String dataStr, int dataStrLen, unsigned int len, int rdelay, int pulse, int pdelay, int repeat, long address, IRsend irsend);
 
 //+=============================================================================
@@ -1439,7 +1439,7 @@ String GetLowerChannelCode(String type) {
     if (type == "NEC" || type == "LG") return "20DF807F";
 }
 
-Int GetLength(String type) {
+int GetLength(String type) {
     if (type == "NEC" || type == "LG") return 32;
 }
 
