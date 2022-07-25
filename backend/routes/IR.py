@@ -103,6 +103,23 @@ def ir_scan():
         raise BadRequest("No blasters were scanned")
 
 """
+Send POST request to ir/brand
+Body must include:
+Device_name = name of the device as obtained from the database
+Type = the brand of the TV as selected from a dropdown
+"""
+@IR.route("/brand", methods=['POST'])
+def ir_brand():
+    data = request.get_json()
+    DEVICE_NAME = data['DEVICE_NAME']
+    TYPE = data['TYPE']
+    current_data = ir_load_blaster_data()
+    current_data[DEVICE_NAME]['type'] = TYPE
+    ir_persist_blaster_data(current_data)
+    return {}
+
+
+"""
 Send POST request to ir/set_channel
 Body must include:
 IP = ip number of arduino device
