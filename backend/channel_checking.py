@@ -52,18 +52,8 @@ def channel_automation():
             del channel_data[channel]
     persist_schedule(channel_data)
     pprint.pprint(channel_data)
-    print('channel checked')
+    print('successfully removed any finishes fixtures')
 
-
-    #tv_count = 0
-    #for channel in channel_data:
-        #channel_id = channel_data[channel][channel_number]
-        #for tvs in tv_list:
-            #if channel_count is not tv_count:
-                #_set_channel(channel_id,uuid)
-                #tv_count +=1
-
-    
     #db = shelve.open('db\storage')
     #data = db['store']['client_key']
     #key= data
@@ -71,14 +61,15 @@ def channel_automation():
 
     db = shelve.open('db\storage')
     tvs = db['scan']
-    print("uuid: ",pprint.pprint(tvs))
+    #print("uuid: ",pprint.pprint(tvs))
 
     for channel in channel_data:
         channel_id = channel_data[channel]['channel_number']
         pprint.pprint(channel_id)
         for tv_id in tvs:
-            print(tv_id)
+            #print(tv_id)
             _set_channel(channel_id,tv_id)
 
     #print(channel_data)
     return channel_data
+
