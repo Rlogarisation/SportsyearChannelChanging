@@ -37,7 +37,7 @@ def IRScan():
     except:
         sock.close()
         for device in devices:
-            return_dict[device[0]] = {"ip_address":device[1], "port":device[2]}
+            return_dict[device[0]] = {"ip_address":device[1], "port":device[2], "type":"NEC"}
         return return_dict
 
 def _ir_set_channel(IP, PORT, CHANNEL, TYPE):
