@@ -129,10 +129,15 @@ TYPE = tv type
 @IR.route("/set_channel", methods=['POST'])
 def ir_set_channel():
     data = request.get_json()
-    IP = data['IP']
-    PORT = data['PORT']
+    DEVICE_NAME = data['DEVICE_NAME']
     CHANNEL = data['CHANNEL']
-    TYPE = data['TYPE']
+
+    db = ir_load_blaster_data()
+    this_blaster = db[DEVICE_NAME]
+
+    IP = this_blaster['ip_address']
+    PORT = this_blaster['port']
+    TYPE = this_blaster['type']
     return _ir_set_channel(IP, PORT, CHANNEL, TYPE)
 
 
@@ -146,9 +151,14 @@ TYPE = tv type
 @IR.route("/lower_volume", methods=['POST'])
 def ir_lower_volume():
     data = request.get_json()
-    IP = data['IP']
-    PORT = data['PORT']
-    TYPE = data['TYPE']
+    DEVICE_NAME = data['DEVICE_NAME']
+
+    db = ir_load_blaster_data()
+    this_blaster = db[DEVICE_NAME]
+
+    IP = this_blaster['ip_address']
+    PORT = this_blaster['port']
+    TYPE = this_blaster['type']
     return _ir_lower_volume(IP, PORT, TYPE)
 
 """
@@ -161,9 +171,14 @@ TYPE = tv type
 @IR.route("/raise_volume", methods=['POST'])
 def ir_raise_volume():
     data = request.get_json()
-    IP = data['IP']
-    PORT = data['PORT']
-    TYPE = data['TYPE']
+    DEVICE_NAME = data['DEVICE_NAME']
+
+    db = ir_load_blaster_data()
+    this_blaster = db[DEVICE_NAME]
+
+    IP = this_blaster['ip_address']
+    PORT = this_blaster['port']
+    TYPE = this_blaster['type']
     return _ir_raise_volume(IP, PORT, TYPE)
 
 """
@@ -176,9 +191,14 @@ TYPE = tv type
 @IR.route("/mute", methods=['POST'])
 def ir_mute():
     data = request.get_json()
-    IP = data['IP']
-    PORT = data['PORT']
-    TYPE = data['TYPE']
+    DEVICE_NAME = data['DEVICE_NAME']
+
+    db = ir_load_blaster_data()
+    this_blaster = db[DEVICE_NAME]
+
+    IP = this_blaster['ip_address']
+    PORT = this_blaster['port']
+    TYPE = this_blaster['type']
     return _ir_mute(IP, PORT, TYPE)
 
 """
@@ -191,9 +211,14 @@ TYPE = tv type
 @IR.route("/power", methods=['POST'])
 def ir_power():
     data = request.get_json()
-    IP = data['IP']
-    PORT = data['PORT']
-    TYPE = data['TYPE']
+    DEVICE_NAME = data['DEVICE_NAME']
+
+    db = ir_load_blaster_data()
+    this_blaster = db[DEVICE_NAME]
+
+    IP = this_blaster['ip_address']
+    PORT = this_blaster['port']
+    TYPE = this_blaster['type']
     return _ir_power(IP, PORT, TYPE)
 
 """
@@ -206,9 +231,14 @@ TYPE = tv type
 @IR.route("/raise_channel", methods=['POST'])
 def ir_raise_channel():
     data = request.get_json()
-    IP = data['IP']
-    PORT = data['PORT']
-    TYPE = data['TYPE']
+    DEVICE_NAME = data['DEVICE_NAME']
+
+    db = ir_load_blaster_data()
+    this_blaster = db[DEVICE_NAME]
+
+    IP = this_blaster['ip_address']
+    PORT = this_blaster['port']
+    TYPE = this_blaster['type']
     return _ir_raise_channel(IP, PORT, TYPE)
 
 """
@@ -221,9 +251,14 @@ TYPE = tv type
 @IR.route("/lower_channel", methods=['POST'])
 def ir_lower_channel():
     data = request.get_json()
-    IP = data['IP']
-    PORT = data['PORT']
-    TYPE = data['TYPE']
+    DEVICE_NAME = data['DEVICE_NAME']
+
+    db = ir_load_blaster_data()
+    this_blaster = db[DEVICE_NAME]
+
+    IP = this_blaster['ip_address']
+    PORT = this_blaster['port']
+    TYPE = this_blaster['type']
     return _ir_lower_channel(IP, PORT, TYPE)
 
 """
