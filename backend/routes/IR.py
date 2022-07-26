@@ -42,37 +42,58 @@ def IRScan():
 
 def _ir_set_channel(IP, PORT, CHANNEL, TYPE):
     URL = f'http://{IP}:{PORT}/ir/set_channel?channel={CHANNEL}&type={TYPE}'
-    requests.post(URL)
+    try:
+        requests.post(URL)
+    except requests.exceptions.ChunkedEncodingError:
+        return {}
     return {}
 
 def _ir_lower_volume(IP, PORT, TYPE):
     URL = f'http://{IP}:{PORT}/ir/lower_volume?type={TYPE}'
-    requests.post(URL)
+    try:
+        requests.post(URL)
+    except requests.exceptions.ChunkedEncodingError:
+        return {}
     return {}
 
 def _ir_raise_volume(IP, PORT, TYPE):
     URL = f'http://{IP}:{PORT}/ir/raise_volume?type={TYPE}'
-    requests.post(URL)
+    try:
+        requests.post(URL)
+    except requests.exceptions.ChunkedEncodingError:
+        return {}
     return {}
 
 def _ir_mute(IP, PORT, TYPE):
     URL = f'http://{IP}:{PORT}/ir/mute?type={TYPE}'
-    requests.post(URL)
+    try:
+        requests.post(URL)
+    except requests.exceptions.ChunkedEncodingError:
+        return {}
     return {}
 
 def _ir_power(IP, PORT, TYPE):
     URL = f'http://{IP}:{PORT}/ir/power?type={TYPE}'
-    requests.post(URL)
+    try:
+        requests.post(URL)
+    except requests.exceptions.ChunkedEncodingError:
+        return {}
     return {}
 
 def _ir_raise_channel(IP, PORT, TYPE):
     URL = f'http://{IP}:{PORT}/ir/raise_channel?type={TYPE}'
-    requests.post(URL)
+    try:
+        requests.post(URL)
+    except requests.exceptions.ChunkedEncodingError:
+        return {}
     return {}
 
 def _ir_lower_channel(IP, PORT, TYPE):
     URL = f'http://{IP}:{PORT}/ir/lower_channel?type={TYPE}'
-    requests.post(URL)
+    try:
+        requests.post(URL)
+    except requests.exceptions.ChunkedEncodingError:
+        return {}
     return {}
 
 """
