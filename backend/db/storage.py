@@ -49,3 +49,17 @@ def load_tv_channels(uuid):
         raise BadRequest("No TV Channels, please run scan_channels(uuid)")
 
     return tv_channels
+
+
+def persist_schedule(channel_data):
+    db = shelve.open('db\storage')
+    db['schedule'] = channel_data
+    db.close()
+
+def load_schedule():
+    db = shelve.open('db\storage')  
+    try:
+        data = db['schedule']
+    except:
+        raise BadRequest("No schedules in database")
+    return data
