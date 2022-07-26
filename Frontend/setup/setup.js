@@ -23,7 +23,8 @@ const loadTVs = (isIR) => {
       try {
         var remote_protocol = remotes[device_name]['type'];
       } catch {
-        var remote_protocol = 'nec';
+        var remote_protocol = 'NEC';
+        update_protocol(device_name);
       }
       console.log(remotes);
       var row = tableData.insertRow();
@@ -66,8 +67,6 @@ const loadTVs = (isIR) => {
 
 const update_protocol = (device_name) => {
   const dropdown = document.getElementById('tvProtocols_' + device_name);
-  console.log(device_name)
-  console.log(dropdown)
   const new_protocol = dropdown.options[dropdown.selectedIndex].value;
   route = 'ir/brand'
   fetch(`${FETCHURL}${route}`, {
@@ -84,7 +83,8 @@ const update_protocol = (device_name) => {
   .then((response) => {
     if (response.status === 200) {
       response.json().then((data) => {
-        console.log("Update protocol success")
+        console.log("Update protocol success");
+        sessionStorage.setItem("remote_type", new_protocol);
       });
     } else handleResponse(response);
   })
@@ -97,7 +97,7 @@ const saveIR = (device_name, remotes) => {
   sessionStorage.setItem("remote_name", device_name);
   sessionStorage.setItem("remote_ip", remotes[device_name]['ip_address']);
   sessionStorage.setItem("remote_port", remotes[device_name]['port']);
-  sessionStorage.setItem("remote_protocol", remotes[device_name]['type']);
+  sessionStorage.setItem("remote_type", remotes[device_name]['type']);
 }
 
 // Handle Error Messages from requests
