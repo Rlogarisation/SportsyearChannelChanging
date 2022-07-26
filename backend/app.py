@@ -26,8 +26,8 @@ init_flag = 0
 obtain_schedule()
 scheduler = BackgroundScheduler()
 scheduler.start()
-trigger1 = AndTrigger([IntervalTrigger(minutes=0.5)])
-trigger2 = AndTrigger([IntervalTrigger(minutes=0.1)])
+trigger1 = AndTrigger([IntervalTrigger(minutes=1)])
+trigger2 = AndTrigger([IntervalTrigger(minutes=0.3)])
 scheduled_job = scheduler.add_job(obtain_schedule,trigger1)
 scheduled_job2 = scheduler.add_job(channel_automation,trigger2)
 
