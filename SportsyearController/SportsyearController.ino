@@ -1326,13 +1326,15 @@ void irblast(String type, String dataStr, unsigned int len, int rdelay, int puls
     for (int r = 0; r < repeat; r++) {
         // Pulse Loop
         for (int p = 0; p < pulse; p++) {
-        serialPrintUint64(data, HEX);
-        if (type == "nec") {
-            irsend.sendNEC(data, len);
-        } else if (type == "lg") {
-            irsend.sendLG(data, len);
-        }
-        if (p + 1 < pulse) delay(pdelay);
+            serialPrintUint64(data, HEX);
+            if (type == "nec") {
+                irsend.sendNEC(data, len);
+            } else if (type == "lg") {
+                irsend.sendLG(data, len);
+            } else if (type == "samsung") {
+                irsend.sendSAMSUNG(data, len);
+            }
+            if (p + 1 < pulse) delay(pdelay);
         }
         if (r + 1 < repeat) delay(rdelay);
 
@@ -1360,6 +1362,8 @@ void irblastlong(String type, String dataStr, int dataStrLen, unsigned int len, 
                     irsend.sendNEC(data, len);
                 } else if (type == "lg") {
                     irsend.sendLG(data, len);
+                } else if (type == "samsung") {
+                    irsend.sendSAMSUNG(data, len);
                 }
                 if (p + 1 < pulse) delay(pdelay);
             }
@@ -1400,18 +1404,22 @@ void rawblast(JsonArray &raw, int khz, int rdelay, int pulse, int pdelay, int re
 
 String GetPowerCode(String type) {
     if (type == "NEC" || type == "LG") return "20DF10EF";
+    else if (type == "SAMSUNG") return "E0E040BF";
 }
 
 String GetLowerVolumeCode(String type) {
     if (type == "NEC" || type == "LG") return "20DFC03F";
+    else if (type == "SAMSUNG") return "E0E0D02F";
 }
 
 String GetRaiseVolumeCode(String type) {
     if (type == "NEC" || type == "LG") return "20DF40BF";
+    else if (type == "SAMSUNG") return "E0E0E01F";
 }
 
 String GetMuteCode(String type) {
     if (type == "NEC" || type == "LG") return "20DF906F";
+    else if (type == "SAMSUNG") return "E0E0F00F";
 }
 
 String GetCodeFromNumber(char number, String type) {
@@ -1428,19 +1436,35 @@ String GetCodeFromNumber(char number, String type) {
             case '8': return "20DF18E7";
             case '9': return "20DF9867";
         }
+    } else if (type == "samsung") {
+        switch (number) {
+            case '0': return "E0E08877";
+            case '1': return "E0E020DF";
+            case '2': return "E0E0A05F";
+            case '3': return "E0E0609F";
+            case '4': return "E0E010EF";
+            case '5': return "E0E0906F";
+            case '6': return "E0E050AF";
+            case '7': return "E0E030CF";
+            case '8': return "E0E0B04F";
+            case '9': return "E0E0708F";
+        }
     }
 }
 
 String GetRaiseChannelCode(String type) {
     if (type == "NEC" || type == "LG") return "20DF00FF";
+    else if (type == "SAMSUNG") return "E0E048B7";
 }
 
 String GetLowerChannelCode(String type) {
     if (type == "NEC" || type == "LG") return "20DF807F";
+    else if (type == "SAMSUNG") return "E0E008F7";
 }
 
 int GetLength(String type) {
     if (type == "NEC" || type == "LG") return 32;
+    else if (type == "SAMSUNG") return 32;
 }
 
 void loop() {
