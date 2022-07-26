@@ -88,10 +88,9 @@ def ir_scan():
         current_data = ir_load_blaster_data()
         new_data = current_data.copy()
         updated = False
-        print(ir_device_list)
         for device in ir_device_list.keys():
             if device not in current_data.keys():
-                print(f'Adding [{device}] with location [{device["ip_address"]}:{device["port"]}] to database')
+                print(f'Adding [{device}] with location [{ir_device_list[device]["ip_address"]}:{ir_device_list[device]["port"]}] to database')
                 new_data[device] = ir_device_list[device]
                 updated = True
         if updated:
