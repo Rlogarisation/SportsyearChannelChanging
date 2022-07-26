@@ -77,9 +77,7 @@ const volumeIncrement = () => {
   if (isIR) {
     route = 'ir/raise_volume';
     bodyContent = JSON.stringify({
-      IP : sessionStorage.getItem("remote_ip"),
-      PORT : sessionStorage.getItem("remote_port"),
-      TYPE : sessionStorage.getItem("remote_type")
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
     })
   } else {
     route = 'smart/raise_volume'
@@ -113,9 +111,7 @@ const volumeDecrement = () => {
   if (isIR) {
     route = 'ir/lower_volume';
     bodyContent = JSON.stringify({
-      IP : sessionStorage.getItem("remote_ip"),
-      PORT : sessionStorage.getItem("remote_port"),
-      TYPE : sessionStorage.getItem("remote_type")
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
     })
   } else {
     route = 'smart/lower_volume';
@@ -149,9 +145,7 @@ const mute = () => {
   if (isIR) {
     route = 'ir/mute';
     bodyContent = JSON.stringify({
-      IP : sessionStorage.getItem("remote_ip"),
-      PORT : sessionStorage.getItem("remote_port"),
-      TYPE : sessionStorage.getItem("remote_type")
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
     })
   } else {
     route = 'smart/mute';
@@ -185,9 +179,7 @@ const channelIncrement = () => {
   if (isIR) {
     route = 'ir/raise_channel';
     bodyContent = JSON.stringify({
-      IP : sessionStorage.getItem("remote_ip"),
-      PORT : sessionStorage.getItem("remote_port"),
-      TYPE : sessionStorage.getItem("remote_type")
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
     })
   } else {
     route = 'smart/raise_channel';
@@ -221,9 +213,7 @@ const channelDecrement = () => {
   if (isIR) {
     route = 'ir/lower_channel';
     bodyContent = JSON.stringify({
-      IP : sessionStorage.getItem("remote_ip"),
-      PORT : sessionStorage.getItem("remote_port"),
-      TYPE : sessionStorage.getItem("remote_type")
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
     })
   } else {
     route = 'smart/lower_channel';
@@ -257,9 +247,7 @@ const power = () => {
   if (isIR) {
     route = 'ir/power';
     bodyContent = JSON.stringify({
-      IP : sessionStorage.getItem("remote_ip"),
-      PORT : sessionStorage.getItem("remote_port"),
-      TYPE : sessionStorage.getItem("remote_type")
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
     })
   } else {
     route = 'smart/power_toggle';

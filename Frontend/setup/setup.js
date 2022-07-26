@@ -39,8 +39,7 @@ const loadTVs = (isIR) => {
                           <option value="SONY"  ${remote_protocol=='SONY' ? 'selected' : ''}>Sony</option>
                         </select>`;
       cell = row.insertCell();
-      cell.innerHTML = `<a class="smlButton" id="control_${device_name}" href="${controlUrl}">Control TV</a>`;
-      cell.addEventListener("click", saveIR(device_name, remotes))
+      cell.innerHTML = `<a class="smlButton" id="control_${device_name}" onclick="sessionStorage.setItem('remote_name', '${device_name}')" href="${controlUrl}">Control TV</a>`;
       cell = row.insertCell();
       cell.innerHTML = `<div class="smlButton" id="remove_${device_name}" onclick="remove_tv('${device_name}')">Remove TV</div>`;
     }
@@ -84,20 +83,12 @@ const update_protocol = (device_name) => {
     if (response.status === 200) {
       response.json().then((data) => {
         console.log("Update protocol success");
-        sessionStorage.setItem("remote_type", new_protocol);
       });
     } else handleResponse(response);
   })
   .catch((err)=>{
     alert("Oops crashed due to " + err + " \n(Check server is running)");
   });
-}
-
-const saveIR = (device_name, remotes) => {
-  sessionStorage.setItem("remote_name", device_name);
-  sessionStorage.setItem("remote_ip", remotes[device_name]['ip_address']);
-  sessionStorage.setItem("remote_port", remotes[device_name]['port']);
-  sessionStorage.setItem("remote_type", remotes[device_name]['type']);
 }
 
 // Handle Error Messages from requests
