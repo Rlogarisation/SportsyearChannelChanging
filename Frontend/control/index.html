@@ -20,14 +20,14 @@
             <li><a href="../schedule/index.html">Schedule</a></li>
         </ul>
     </div>
-    <h1>TV Control</h1>
+    <h1 id="controlTitle">TV Control</h1>
     <div id="changeChannelsSection">
         <div>
             <label for="tv_list">TV: </label>
             <label name="tv_display" id="tv_display"></label>
             <button value="Change TV"><a href="../setup/index.html">Change TV</a></button>
         </div>
-        <div>
+        <div id="changeChannelList">
             <label for="channels">Change Channel</label>
             <select name="channels" id="channels"></select>
             <button onclick="setChannel()">Change</button>
