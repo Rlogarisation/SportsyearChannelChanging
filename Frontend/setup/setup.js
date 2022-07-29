@@ -37,6 +37,7 @@ const loadTVs = (isIR) => {
                           <option value="NEC"  ${remote_protocol=='NEC' ? 'selected' : ''}>NEC</option>
                           <option value="PANASONIC" ${remote_protocol=='PANASONIC' ? 'selected' : ''}>Panasonic</option>
                           <option value="SONY"  ${remote_protocol=='SONY' ? 'selected' : ''}>Sony</option>
+                          <option value="SAMSUNG"  ${remote_protocol=='SAMSUNG' ? 'selected' : ''}>Samsung</option>
                         </select>`;
       cell = row.insertCell();
       cell.innerHTML = `<a class="smlButton" id="control_${device_name}" onclick="sessionStorage.setItem('remote_name', '${device_name}')" href="${controlUrl}">Control TV</a>`;
