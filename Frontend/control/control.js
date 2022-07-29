@@ -18,6 +18,7 @@ window.onload = load = () => {
   const control_title = document.getElementById('controlTitle');
   uuid = sessionStorage.getItem('uuid');
   isIR = sessionStorage.getItem("isIR") == 'true';
+  channel_list();
 
   if (!isIR && (uuid === null || uuid === 'undefined')) {
     // No TV selected so default to first found
@@ -25,7 +26,6 @@ window.onload = load = () => {
     control_title.innerHTML = "TV Control: SMART"
   } else if (!isIR) {
     // Display TV
-    channel_list();
     tv_display.innerHTML = sessionStorage.getItem('uuid')
     control_title.innerHTML = "TV Control: SMART"
   } else {
@@ -33,8 +33,6 @@ window.onload = load = () => {
     remote_name = sessionStorage.getItem('remote_name');
     tv_display.innerHTML = remote_name
     control_title.innerHTML = "TV Control: IR REMOTE";
-    var changeChannelList = document.getElementById("changeChannelList");
-    changeChannelList.style.display = "none";
   }
 }
 
@@ -278,40 +276,56 @@ const power = () => {
 // GET Request for list of available channels with uuid
 const channel_list = () => {
   console.log("GETTING TV CHANNELS");
-  route = 'smart/get_tvs';
-  uuid = sessionStorage.getItem('uuid');
-  fetch(`${FETCHURL}${route}`, {
-    method: 'GET'
-  })
-  .then((response) => {
-    if (response.status === 200) {
-      response.json().then((data) => {
-        channels_list = Object.keys(data['tv_list'][uuid]['tv_channels']);
-        updateChannels(channels_list);
-      });
-    } else handleResponse(response);
-  })
-  .catch((err)=>{
-    alert("Oops crashed due to " + err + " \n(Check server is running)");
-  });
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  if (!(isIR)) {
+    route = 'smart/get_tvs';
+    uuid = sessionStorage.getItem('uuid');
+    fetch(`${FETCHURL}${route}`, {
+      method: 'GET'
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        response.json().then((data) => {
+          channels_list = Object.keys(data['tv_list'][uuid]['tv_channels']);
+          updateChannels(channels_list);
+        });
+      } else handleResponse(response);
+    })
+    .catch((err)=>{
+      alert("Oops crashed due to " + err + " \n(Check server is running)");
+    });
+  } else {
+    ir_channels_list = [...Array(99).keys()].map(i => i + 1);
+    console.log(ir_channels_list);
+    updateChannels(ir_channels_list);
+  }
 }
-
-const setChannel = () => {
+  
+  const setChannel = () => {
   const select = document.getElementById('channels');
-  var id = select.options[select.selectedIndex].value
+  var id = select.options[select.selectedIndex].value;
   console.log(`Set Channel ${id}`);
-
-  route = 'smart/set_channel'
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  if (!(isIR)) {
+  route = 'smart/set_channel';
+  bodyContent = JSON.stringify({
+    uuid : sessionStorage.getItem('uuid'),
+    channel_id : id
+  })
+  } else {
+    route = 'ir/set_channel';
+    bodyContent = JSON.stringify({
+      DEVICE_NAME : sessionStorage.getItem('remote_name'),
+      CHANNEL : id
+    })
+  }
   fetch(`${FETCHURL}${route}`, {
     method: 'POST',
     headers: {
       'Content-Type' : 'application/json',
       "Accept" : "application/json"
     },
-    body: JSON.stringify({
-      uuid : sessionStorage.getItem('uuid'),
-      channel_id : id
-    })
+    body: bodyContent
   })
   .then((response) => {
     if (response.status === 200) {
