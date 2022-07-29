@@ -11,6 +11,7 @@ from collections import OrderedDict
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.combining import AndTrigger
 from apscheduler.triggers.interval import IntervalTrigger
+from routes.automation import initialiseAutomation
 import json
 
 
@@ -19,17 +20,6 @@ import json
 # scheduler = APScheduler()
 app = Flask(__name__)
 CORS(app)
-# Background task scheduler
-# scheduler.init_app(app)
-# scheduler.start()
-init_flag = 0
-obtain_schedule()
-scheduler = BackgroundScheduler()
-scheduler.start()
-trigger1 = AndTrigger([IntervalTrigger(minutes=1)])
-trigger2 = AndTrigger([IntervalTrigger(minutes=0.3)])
-scheduled_job = scheduler.add_job(obtain_schedule,trigger1)
-scheduled_job2 = scheduler.add_job(channel_automation,trigger2)
 
 # Add endpoints from blueprints
 from routes.audio import audio as audio_bp
@@ -44,8 +34,14 @@ app.register_blueprint(scan_bp)
 from routes.power import power as power_bp
 app.register_blueprint(power_bp)
 
+from routes.automation import automation as automation_bp
+app.register_blueprint(automation_bp)
+
 if __name__ == "__main__":
     # Run below command if database is corrupted
     # persist_tv_data({})
+    initialiseAutomation()
     app.run()
+
+
 
