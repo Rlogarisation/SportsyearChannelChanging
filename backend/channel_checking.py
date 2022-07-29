@@ -12,30 +12,24 @@ def obtain_schedule():
     URL = "https://sportsyear.com.au/api/v1/fixtures/search?preset=next_24_hours&inCalendars=53b2554ac7ded01572467f4cf88128e3771d8c4646f6956a21e8199a6d221359&startingAndEnding=1&includeBroadcasting=1&ac=0"
     r = requests.get(url = URL)
     data = r.json()
-    #pprint.pprint(data)
-    channels_info = {}
 
-    for fixture in data['entities']['fixtures']['byId']:
-        channels_info[fixture] =  {}   
-        channel_id = data['entities']['channels']['broadcastingFixture'][fixture][0]
-        channel_name = data['entities']['channels']['byId'][str(channel_id)]['apiCode']
-        channels_info[fixture].update({'channel_name':channel_name})
-
-        channels_info[fixture].update({'channel_number':channel_id})
-
-        startUTC = data['entities']['fixtures']['byId'][fixture]['startDateTimeUTC']
-        channels_info[fixture].update({'start':startUTC})
-
-        endUTC = data['entities']['fixtures']['byId'][fixture]['endDateTimeUTC']
-        channels_info[fixture].update({'end':endUTC})
-        
-        rank = data['entities']['fixtures']['byId'][fixture]['ranking']   
-        channels_info[fixture].update({'ranking':rank})
-
-    ordered_channels_info = OrderedDict(sorted(channels_info.items(), key=lambda kv: kv[1]['ranking'],reverse=True))
+    chan_dic = {}
+    for fix in data['entities']['fixtures']['byId']:
+        print('hello')
+        chan_dic[fix] = {
+            'channel_name' : data['entities']['channels']['byId'][str(data['entities']['channels']['broadcastingFixture'][fix][0])]['apiCode'],
+            'channel_number' : data['entities']['channels']['broadcastingFixture'][fix][0],
+            'end' : data['entities']['fixtures']['byId'][fix]['endDateTimeUTC'],    
+            'ranking' : data['entities']['fixtures']['byId'][fix]['ranking'],    
+            'start' : data['entities']['fixtures']['byId'][fix]['startDateTimeUTC']    
+        }
+    print('new fixture')
+   
+    ordered_channels_info = dict(OrderedDict(sorted(chan_dic.items(), key=lambda kv: kv[1]['ranking'],reverse=True)))
     #print(ordered_channels_info)
     persist_schedule(ordered_channels_info)
-    print("Schedule updated on database")
+    print("schedule obtained on database")
+    pprint.pprint(ordered_channels_info)
     return ordered_channels_info
 
 #returns a dictionary of channels to be played at the present instance
@@ -51,25 +45,33 @@ def channel_automation():
         if currentDateTimeUTC > channel_data[channel]['end']:
             del channel_data[channel]
     persist_schedule(channel_data)
-    pprint.pprint(channel_data)
-    print('successfully removed any finishes fixtures')
 
-    #db = shelve.open('db\storage')
-    #data = db['store']['client_key']
-    #key= data
-    #pprint.pprint(key)
+    print('db schedule checked')
 
     db = shelve.open('db\storage')
-    tvs = db['scan']
-    #print("uuid: ",pprint.pprint(tvs))
+    tvs = list(db['scan'])
+    print("uuid: ")
 
+    channel_num_list = []
     for channel in channel_data:
-        channel_id = channel_data[channel]['channel_number']
-        pprint.pprint(channel_id)
-        for tv_id in tvs:
-            #print(tv_id)
-            _set_channel(channel_id,tv_id)
+        channel_num_list.append(channel_data[channel]['channel_number'])    
+    print(channel_num_list)
+    print('------------------------------------------------------------------------------')
 
-    #print(channel_data)
+    #case 1: if #channels = #tvs -> just set 1 to 1
+    if len(channel_num_list) is len(tvs):
+        for i in range(len(channel_num_list)):
+             print("case1: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
+             _set_channel(str(channel_num_list[i]),tvs[i])    
+    #case 2: if #channels < #tvs -> have the channels wrap again 
+    elif len(channel_num_list) < len(tvs):
+        for i in rangelen((channel_num_list)):
+             print("case 2: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
+             _set_channel(str(channel_num_list[i]),tvs[i])    
+    #case 3: if channels > tvs -> have set channels on tvs and exit loop
+    elif len(channel_num_list) > len(tvs):
+         for i in range(len(tvs)):
+             print("case 3: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
+             _set_channel(str(channel_num_list[i]),tvs[i])     
+                
     return channel_data
-
