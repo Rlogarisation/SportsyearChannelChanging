@@ -13,27 +13,26 @@ const updateChannels = (channels) => {
   }
 }
 
-const updateTv = (tvs) => {
-  const tvDropdown = document.getElementById("tv_list");
-
-  for (tv in tvs) {
-    var opt = document.createElement('option');
-    opt.value = tv;
-    opt.innerHTML = `TV ${tv}`;
-    tvDropdown.appendChild(opt);
-  }
-}
-
 window.onload = load = () => {
-  uuid = sessionStorage.getItem('uuid')
-  if (uuid === null || uuid === 'undefined') {
+  const tv_display = document.getElementById('tv_display');
+  const control_title = document.getElementById('controlTitle');
+  uuid = sessionStorage.getItem('uuid');
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  channel_list();
+
+  if (!isIR && (uuid === null || uuid === 'undefined')) {
     // No TV selected so default to first found
-    console.log(`catch`)
     get_first_uuid();
-  } else {
-    channel_list();
-    const tv_display = document.getElementById('tv_display');
+    control_title.innerHTML = "TV Control: SMART"
+  } else if (!isIR) {
+    // Display TV
     tv_display.innerHTML = sessionStorage.getItem('uuid')
+    control_title.innerHTML = "TV Control: SMART"
+  } else {
+    // Display IR Remote
+    remote_name = sessionStorage.getItem('remote_name');
+    tv_display.innerHTML = remote_name
+    control_title.innerHTML = "TV Control: IR REMOTE";
   }
 }
 
@@ -72,16 +71,25 @@ const handleResponse = (response) => {
 
 const volumeIncrement = () => {
   console.log("VOLUME UP Pressed");
-  route = 'smart/raise_volume'
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  if (isIR) {
+    route = 'ir/raise_volume';
+    bodyContent = JSON.stringify({
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
+    })
+  } else {
+    route = 'smart/raise_volume'
+    bodyContent = JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  }
   fetch(`${FETCHURL}${route}`, {
     method: 'POST',
     headers: {
       'Content-Type' : 'application/json',
       "Accept" : "application/json"
     },
-    body: JSON.stringify({
-      uuid : sessionStorage.getItem('uuid')
-    })
+    body: bodyContent
   })
   .then((response) => {
     if (response.status === 200) {
@@ -97,16 +105,25 @@ const volumeIncrement = () => {
 
 const volumeDecrement = () => {
   console.log("VOLUME DOWN!");
-  route = 'smart/lower_volume'
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  if (isIR) {
+    route = 'ir/lower_volume';
+    bodyContent = JSON.stringify({
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
+    })
+  } else {
+    route = 'smart/lower_volume';
+    bodyContent = JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  }
   fetch(`${FETCHURL}${route}`, {
     method: 'POST',
     headers: {
       'Content-Type' : 'application/json',
       "Accept" : "application/json"
     },
-    body: JSON.stringify({
-      uuid : sessionStorage.getItem('uuid')
-    })
+    body: bodyContent
   })
   .then((response) => {
     if (response.status === 200) {
@@ -122,16 +139,25 @@ const volumeDecrement = () => {
 
 const mute = () => {
   console.log("MUTE!");
-  route = 'smart/mute'
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  if (isIR) {
+    route = 'ir/mute';
+    bodyContent = JSON.stringify({
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
+    })
+  } else {
+    route = 'smart/mute';
+    bodyContent = JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  }
   fetch(`${FETCHURL}${route}`, {
     method: 'POST',
     headers: {
       'Content-Type' : 'application/json',
       "Accept" : "application/json"
     },
-    body: JSON.stringify({
-      uuid : sessionStorage.getItem('uuid')
-    })
+    body: bodyContent
   })
   .then((response) => {
     if (response.status === 200) {
@@ -147,16 +173,25 @@ const mute = () => {
 
 const channelIncrement = () => {
   console.log("CHANNEL += 1");
-  route = 'smart/raise_channel'
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  if (isIR) {
+    route = 'ir/raise_channel';
+    bodyContent = JSON.stringify({
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
+    })
+  } else {
+    route = 'smart/raise_channel';
+    bodyContent = JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  }
   fetch(`${FETCHURL}${route}`, {
     method: 'POST',
     headers: {
       'Content-Type' : 'application/json',
       "Accept" : "application/json"
     },
-    body: JSON.stringify({
-      uuid : sessionStorage.getItem('uuid')
-    })
+    body: bodyContent
   })
   .then((response) => {
     if (response.status === 200) {
@@ -172,16 +207,25 @@ const channelIncrement = () => {
 
 const channelDecrement = () => {
   console.log("CHANNEL -= 1");
-  route = 'smart/lower_channel'
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  if (isIR) {
+    route = 'ir/lower_channel';
+    bodyContent = JSON.stringify({
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
+    })
+  } else {
+    route = 'smart/lower_channel';
+    bodyContent = JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  }
   fetch(`${FETCHURL}${route}`, {
     method: 'POST',
     headers: {
       'Content-Type' : 'application/json',
       "Accept" : "application/json"
     },
-    body: JSON.stringify({
-      uuid : sessionStorage.getItem('uuid')
-    })
+    body: bodyContent
   })
   .then((response) => {
     if (response.status === 200) {
@@ -197,16 +241,25 @@ const channelDecrement = () => {
 
 const power = () => {
   console.log("POWER BUTTON PRESSED");
-  route = 'smart/power_toggle'
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  if (isIR) {
+    route = 'ir/power';
+    bodyContent = JSON.stringify({
+      DEVICE_NAME : sessionStorage.getItem("remote_name")
+    })
+  } else {
+    route = 'smart/power_toggle';
+    bodyContent = JSON.stringify({
+      uuid : sessionStorage.getItem('uuid')
+    })
+  }
   fetch(`${FETCHURL}${route}`, {
     method: 'POST',
     headers: {
       'Content-Type' : 'application/json',
       "Accept" : "application/json"
     },
-    body: JSON.stringify({
-      uuid : sessionStorage.getItem('uuid')
-    })
+    body: bodyContent
   })
   .then((response) => {
     if (response.status === 200) {
@@ -223,40 +276,56 @@ const power = () => {
 // GET Request for list of available channels with uuid
 const channel_list = () => {
   console.log("GETTING TV CHANNELS");
-  route = 'smart/get_tvs';
-  uuid = sessionStorage.getItem('uuid');
-  fetch(`${FETCHURL}${route}`, {
-    method: 'GET'
-  })
-  .then((response) => {
-    if (response.status === 200) {
-      response.json().then((data) => {
-        channels_list = Object.keys(data['tv_list'][uuid]['tv_channels']);
-        updateChannels(channels_list);
-      });
-    } else handleResponse(response);
-  })
-  .catch((err)=>{
-    alert("Oops crashed due to " + err + " \n(Check server is running)");
-  });
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  if (!(isIR)) {
+    route = 'smart/get_tvs';
+    uuid = sessionStorage.getItem('uuid');
+    fetch(`${FETCHURL}${route}`, {
+      method: 'GET'
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        response.json().then((data) => {
+          channels_list = Object.keys(data['tv_list'][uuid]['tv_channels']);
+          updateChannels(channels_list);
+        });
+      } else handleResponse(response);
+    })
+    .catch((err)=>{
+      alert("Oops crashed due to " + err + " \n(Check server is running)");
+    });
+  } else {
+    ir_channels_list = [...Array(99).keys()].map(i => i + 1);
+    console.log(ir_channels_list);
+    updateChannels(ir_channels_list);
+  }
 }
-
-const setChannel = () => {
+  
+  const setChannel = () => {
   const select = document.getElementById('channels');
-  var id = select.options[select.selectedIndex].value
+  var id = select.options[select.selectedIndex].value;
   console.log(`Set Channel ${id}`);
-
-  route = 'smart/set_channel'
+  isIR = sessionStorage.getItem("isIR") == 'true';
+  if (!(isIR)) {
+  route = 'smart/set_channel';
+  bodyContent = JSON.stringify({
+    uuid : sessionStorage.getItem('uuid'),
+    channel_id : id
+  })
+  } else {
+    route = 'ir/set_channel';
+    bodyContent = JSON.stringify({
+      DEVICE_NAME : sessionStorage.getItem('remote_name'),
+      CHANNEL : id
+    })
+  }
   fetch(`${FETCHURL}${route}`, {
     method: 'POST',
     headers: {
       'Content-Type' : 'application/json',
       "Accept" : "application/json"
     },
-    body: JSON.stringify({
-      uuid : sessionStorage.getItem('uuid'),
-      channel_id : id
-    })
+    body: bodyContent
   })
   .then((response) => {
     if (response.status === 200) {
