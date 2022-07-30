@@ -58,11 +58,19 @@ const loadTVs = (isIR) => {
       cell = row.insertCell();
       cell.innerHTML = uuid;
       cell = row.insertCell();
-      cell.innerHTML = `<a class="smlButton" id="${uuid}" href="${controlUrl}" onclick="sessionStorage.setItem('uuid', '${uuid}')">Control TV</a>`;
+      cell.innerHTML = `<a class="smlButton" id="${uuid}" href="${controlUrl}" onclick="store_smart_tv('${uuid}','${tvs[uuid]['tv_name']}')">Control TV</a>`;
       cell = row.insertCell();
       cell.innerHTML = `<div class="smlButton" id="${uuid}" onclick="remove_tv('${uuid}')">Remove TV</div>`;
     }
   }
+}
+
+const store_smart_tv = (uuid, tv_name) => {
+  sessionStorage.setItem('uuid', uuid);
+  console.log(uuid)
+  console.log(tvs)
+  console.log(tvs[uuid])
+  sessionStorage.setItem('smart_tv_name', tv_name);
 }
 
 const update_protocol = (device_name) => {

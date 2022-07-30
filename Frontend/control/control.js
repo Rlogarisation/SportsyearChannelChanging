@@ -26,7 +26,7 @@ window.onload = load = () => {
     control_title.innerHTML = "TV Control: SMART"
   } else if (!isIR) {
     // Display TV
-    tv_display.innerHTML = sessionStorage.getItem('uuid')
+    tv_display.innerHTML = sessionStorage.getItem('smart_tv_name')
     control_title.innerHTML = "TV Control: SMART"
   } else {
     // Display IR Remote
@@ -48,10 +48,13 @@ const get_first_uuid = () => {
         console.log(data['tv_list']);
         tvs = data['tv_list'];
         uuid = Object.keys(tvs)[0];
+        console.log(tvs)
+        smart_tv_name = tvs[uuid]['tv_name'];
         sessionStorage.setItem('uuid', uuid);
+        sessionStorage.setItem('smart_tv_name', smart_tv_name);
         channel_list();
         const tv_display = document.getElementById('tv_display');
-        tv_display.innerHTML = uuid;
+        tv_display.innerHTML = smart_tv_name;
       });
     } else handleResponse(response);
   })
