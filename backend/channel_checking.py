@@ -65,7 +65,7 @@ def channel_automation():
              _set_channel(str(channel_num_list[i]),tvs[i])    
     #case 2: if #channels < #tvs -> have the channels wrap again 
     elif len(channel_num_list) < len(tvs):
-        for i in rangelen((channel_num_list)):
+        for i in range(len(channel_num_list)):
              print("case 2: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
              _set_channel(str(channel_num_list[i]),tvs[i])    
     #case 3: if channels > tvs -> have set channels on tvs and exit loop
@@ -73,5 +73,5 @@ def channel_automation():
          for i in range(len(tvs)):
              print("case 3: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
              _set_channel(str(channel_num_list[i]),tvs[i])     
-                
+
     return channel_data
