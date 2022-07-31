@@ -41,7 +41,6 @@ def channel_automation():
 
     channel_change_flag = False
     for channel in list(channel_data):
-        channel_count +=1
         if currentDateTimeUTC > channel_data[channel]['end']:
             del channel_data[channel]
         if currentDateTimeUTC is channel_data[channel]['end']:
