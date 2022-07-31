@@ -43,7 +43,7 @@ def channel_automation():
     for channel in list(channel_data):
         if currentDateTimeUTC > channel_data[channel]['end']:
             del channel_data[channel]
-        if currentDateTimeUTC is channel_data[channel]['end']:
+        if currentDateTimeUTC is channel_data[channel]['start']:
             channel_change_flag = True
     persist_schedule(channel_data)
 
