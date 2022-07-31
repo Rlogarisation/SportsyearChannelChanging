@@ -15,7 +15,7 @@ def obtain_schedule():
 
     chan_dic = {}
     for fix in data['entities']['fixtures']['byId']:
-        print('hello')
+        # print('hello')
         chan_dic[fix] = {
             'channel_name' : data['entities']['channels']['byId'][str(data['entities']['channels']['broadcastingFixture'][fix][0])]['apiCode'],
             'channel_number' : data['entities']['channels']['broadcastingFixture'][fix][0],

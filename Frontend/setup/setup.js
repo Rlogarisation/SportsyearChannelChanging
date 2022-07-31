@@ -113,7 +113,11 @@ window.onload = remember_ir_slider = () => {
   if (sessionStorage.getItem("isIR") == 'true') {
     document.getElementById("remoteSlider").checked = true;
   }
+  if (sessionStorage.getItem("isAutomated") == 'true') {
+    document.getElementById("automateSlider").checked = true;
+  }
   get_tvs()
+  automate_event()
 }
 
 // GET Request for current database tv list
@@ -242,15 +246,41 @@ const remove_tv = (uuid) => {
 }
 
 const ir_token = () => {
-  sessionStorage.setItem("isIR", remoteSlider.checked)
+  sessionStorage.setItem("isIR", remoteSlider.checked);
 }
 
 const automate_event = () => {
-  sessionStorage.setItem("isIR", remoteSlider.checked)
-  console.log("AUTOMATE BUTTON NOT IMPLEMENTED YET")
-  alert("AUTOMATE BUTTON NOT IMPLEMENTED YET")
+  console.log("AUTOMATION SMART TV");
+  isAutomated = document.getElementById("automateSlider").checked;
+  if (isAutomated) {
+    route = 'automation/resume';
+  } else {
+    route = 'automation/pause';
+  }
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        if (isAutomated) {
+          console.log("Automate Resume Success")
+        } else {
+          console.log("Automate Pause Success")
+        }
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
+}
+
+const automate_token = () => {
+  sessionStorage.setItem("isAutomated", automateSlider.checked);
 }
 
 remoteSlider.addEventListener("change", get_tvs);
 remoteSlider.addEventListener("change", ir_token);
+automateSlider.addEventListener("change", automate_token);
 automateSlider.addEventListener("change", automate_event);
