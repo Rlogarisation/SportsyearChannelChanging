@@ -23,7 +23,7 @@ def obtain_schedule():
             'ranking' : data['entities']['fixtures']['byId'][fix]['ranking'],    
             'start' : data['entities']['fixtures']['byId'][fix]['startDateTimeUTC']    
         }
-    print('new fixture')
+    #print('new fixture')
    
     ordered_channels_info = dict(OrderedDict(sorted(chan_dic.items(), key=lambda kv: kv[1]['ranking'],reverse=True)))
     #print(ordered_channels_info)
@@ -51,7 +51,7 @@ def channel_automation():
 
     db = shelve.open('db\storage')
     tvs = list(db['scan'])
-    print("uuid: ")
+    #print("uuid: ")
 
     channel_num_list = []
     for channel in channel_data:
