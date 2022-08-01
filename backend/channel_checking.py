@@ -1,8 +1,9 @@
 import requests
 import pprint
 import shelve
-from db.storage import persist_schedule,  load_schedule, load_tv_channels
-from routes.channels import _set_channel
+from db.storage import persist_schedule,  load_schedule, load_tv_channels, ir_load_blaster_data
+from routes.channels import _set_channel 
+from routes.IR import _ir_set_channel
 from collections import OrderedDict
 from datetime import datetime
 
@@ -23,7 +24,7 @@ def obtain_schedule():
             'ranking' : data['entities']['fixtures']['byId'][fix]['ranking'],    
             'start' : data['entities']['fixtures']['byId'][fix]['startDateTimeUTC']    
         }
-    #print('new fixture')
+    print('new fixture')
    
     ordered_channels_info = dict(OrderedDict(sorted(chan_dic.items(), key=lambda kv: kv[1]['ranking'],reverse=True)))
     #print(ordered_channels_info)
@@ -33,11 +34,9 @@ def obtain_schedule():
     return ordered_channels_info
 
 #returns a dictionary of channels to be played at the present instance
-def channel_automation():
-    #pprint.pprint(channel_data)
+def channel_automation(): 
     currentDateTimeUTC = datetime.utcnow().replace(second=0,microsecond=0).isoformat() + 'Z'
     channel_data = load_schedule()
-    #pprint.pprint(channel_data)
 
     channel_change_flag = False
     for channel in list(channel_data):
@@ -51,15 +50,13 @@ def channel_automation():
 
     db = shelve.open('db\storage')
     tvs = list(db['scan'])
-    #print("uuid: ")
-
+    db.close()
     channel_num_list = []
     for channel in channel_data:
         channel_num_list.append(channel_data[channel]['channel_number'])    
     print(channel_num_list)
     print('------------------------------------------------------------------------------')
-
-    if channel_change_flag is True:
+    if (channel_change_flag is True):
         #case 1: if #channels = #tvs -> just set 1 to 1
         if len(channel_num_list) is len(tvs):
             for i in range(len(channel_num_list)):
@@ -67,13 +64,65 @@ def channel_automation():
                  _set_channel(str(channel_num_list[i]),tvs[i])    
         #case 2: if #channels < #tvs -> have the channels wrap again 
         elif len(channel_num_list) < len(tvs):
-            for i in range(len(channel_num_list)):
-                 print("case 2: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
-                 _set_channel(str(channel_num_list[i]),tvs[i])    
-        #case 3: if channels > tvs -> have set channels on tvs and exit loop
+            for i in range(len(tvs)):
+                 if (i > len(channel_num_list)):
+                    _set_channel(str(channel_num_list[i-len(channel_num_list)]),tvs[i-len(channel_num_list)])
+                 else :
+                    print("case 2: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
+                 _set_channel(str(channel_num_list[i]),tvs[i])           
+        #case 3: if #channels > #tvs -> have set channels on tvs and exit loop
         elif len(channel_num_list) > len(tvs):
              for i in range(len(tvs)):
                  print("case 3: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
                  _set_channel(str(channel_num_list[i]),tvs[i])     
-
     return channel_data
+
+def channel_automation_IR():
+    currentDateTimeUTC = datetime.utcnow().replace(second=0,microsecond=0).isoformat() + 'Z'
+    channel_data = load_schedule()
+    channel_change_flag = False
+    for channel in list(channel_data):
+        if currentDateTimeUTC > channel_data[channel]['end']:
+            del channel_data[channel]
+        if currentDateTimeUTC is channel_data[channel]['start']:
+            channel_change_flag = True
+    persist_schedule(channel_data)
+    db = shelve.open('db\storage')
+    tvs = list(db['scan'])
+    db.close()
+
+    channel_num_list = []
+    for channel in channel_data:
+        channel_num_list.append(channel_data[channel]['channel_number'])  
+
+    ir_tvs = ir_load_blaster_data()
+    ip_list = []
+    port_list = []
+    type_list = []
+    for tv in ir_tvs:
+         ip_list.append(ir_tvs[tv]['ip_address'])
+         port_list.append(ir_tvs[tv]['port'])   
+         type_list.append(ir_tvs[tv]['type'])   
+
+    if (channel_change_flag is True):
+        #case 1: if #channels = #tvs -> just set 1 to 1
+        if len(channel_num_list) is len(ir_tvs):
+            for i in range(len(channel_num_list)):
+                 print("case 1: IR signal sent") 
+                 _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])    
+        #case 2: if #channels < #tvs -> have the channels wrap again 
+        elif len(channel_num_list) < len(ir_tvs):
+            for i in range(len(ir_tvs)):
+                 if (i > len(channel_num_list)):
+                    print("case 2.1: IR signal sent") 
+                    _ir_set_channel(ip_list[i-len(channel_num_list)], port_list[i-len(channel_num_list)], str(channel_num_list[i-len(channel_num_list)]), type_list[i-len(channel_num_list)])
+                 else :
+                    print("case 2.2: IR signal sent") 
+                    _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])  
+        #case 3: if channels > tvs -> have set channels on tvs and exit loop
+        elif len(channel_num_list) > len(ir_tvs):
+             for i in range(len(tvs)):
+                print("case 3: IR signal sent") 
+                _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])   
+    
+              
