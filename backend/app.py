@@ -6,14 +6,13 @@ from pywebostv.connection import WebOSClient
 from pywebostv.controls import WebOSControlBase, MediaControl, TvControl, SystemControl, ApplicationControl, InputControl, SourceControl
 from db.storage import load_store, persist_tv_data, load_tv_channels, load_tv_data, persist_store
 from helper import connect_client, load_ip, scan_channels
-from channel_checking import obtain_schedule, channel_automation
+from channel_checking import obtain_schedule, channel_automation, channel_automation_IR
 from collections import OrderedDict
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.combining import AndTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 from routes.automation import initialiseAutomation
 import json
-
 
 # from flask_apscheduler import APScheduler
 # https://viniciuschiele.github.io/flask-apscheduler/index.html
