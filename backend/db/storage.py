@@ -50,6 +50,19 @@ def load_tv_channels(uuid):
 
     return tv_channels
 
+def persist_schedule(channel_data):
+    db = shelve.open('db\storage')
+    db['schedule'] = channel_data
+    db.close()
+
+def load_schedule():
+    db = shelve.open('db\storage')  
+    try:
+        data = db['schedule']
+    except:
+        raise BadRequest("No schedules in database")
+    return data
+
 ######################################## IR DATABASE FUNCTIONS ########################################
 def ir_load_blaster_data():
     db = shelve.open('db/ir_storage')

@@ -1,7 +1,7 @@
 const FETCHURL = 'http://localhost:5000/';
 const controlUrl = `${window.location.href.slice(0,-17)}/control/index.html`;
 const remoteSlider = document.getElementById("remoteSlider");
-const automateSlider = document.getElementById("automateSlider");
+const automateSmartSlider = document.getElementById("automateSmartSlider");
 
 var tvs = {};
 var remotes = {};
@@ -113,7 +113,15 @@ window.onload = remember_ir_slider = () => {
   if (sessionStorage.getItem("isIR") == 'true') {
     document.getElementById("remoteSlider").checked = true;
   }
+  if (sessionStorage.getItem("isSmartAutomated") == 'true') {
+    document.getElementById("automateSmartSlider").checked = true;
+  }
+  if (sessionStorage.getItem("isIRAutomated") == 'true') {
+    document.getElementById("automateIRSlider").checked = true;
+  }
   get_tvs()
+  automate_smart_event()
+  automate_ir_event()
 }
 
 // GET Request for current database tv list
@@ -242,15 +250,74 @@ const remove_tv = (uuid) => {
 }
 
 const ir_token = () => {
-  sessionStorage.setItem("isIR", remoteSlider.checked)
+  sessionStorage.setItem("isIR", remoteSlider.checked);
 }
 
-const automate_event = () => {
-  sessionStorage.setItem("isIR", remoteSlider.checked)
-  console.log("AUTOMATE BUTTON NOT IMPLEMENTED YET")
-  alert("AUTOMATE BUTTON NOT IMPLEMENTED YET")
+const automate_smart_event = () => {
+  console.log("AUTOMATION SMART TV");
+  isSmartAutomated = document.getElementById("automateSmartSlider").checked;
+  if (isSmartAutomated) {
+    route = 'smart/automation/resume';
+  } else {
+    route = 'smart/automation/pause';
+  }
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        if (isSmartAutomated) {
+          console.log("Automate Smart Resume Success")
+        } else {
+          console.log("Automate Smart Pause Success")
+        }
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
+}
+
+const automate_smart_token = () => {
+  sessionStorage.setItem("isSmartAutomated", automateSmartSlider.checked);
+}
+
+const automate_ir_event = () => {
+  console.log("AUTOMATION IR TV");
+  isIRAutomated = document.getElementById("automateIRSlider").checked;
+  if (isIRAutomated) {
+    route = 'ir/automation/resume';
+  } else {
+    route = 'ir/automation/pause';
+  }
+  fetch(`${FETCHURL}${route}`, {
+    method: 'POST',
+  })
+  .then((response) => {
+    if (response.status === 200) {
+      response.json().then((data) => {
+        if (isIRAutomated) {
+          console.log("Automate IR Resume Success")
+        } else {
+          console.log("Automate IR Pause Success")
+        }
+      });
+    } else handleResponse(response);
+  })
+  .catch((err)=>{
+    alert("Oops crashed due to " + err + " \n(Check server is running)");
+  });
+}
+
+const automate_ir_token = () => {
+  sessionStorage.setItem("isIRAutomated", automateIRSlider.checked);
 }
 
 remoteSlider.addEventListener("change", get_tvs);
 remoteSlider.addEventListener("change", ir_token);
-automateSlider.addEventListener("change", automate_event);
+automateSmartSlider.addEventListener("change", automate_smart_token);
+automateSmartSlider.addEventListener("change", automate_smart_event);
+automateIRSlider.addEventListener("change", automate_ir_token);
+automateIRSlider.addEventListener("change", automate_ir_event);

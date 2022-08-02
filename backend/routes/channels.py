@@ -4,14 +4,16 @@ from pywebostv.connection import WebOSClient
 from db.storage import load_store, load_tv_channels
 from helper import connect_client, load_ip
 from pywebostv.controls import TvControl
+import pprint
 
 channels = Blueprint('channels', __name__, url_prefix='/smart/')
 
 def _set_channel(channel_id, uuid):
     # Check channel in list
     channel_list = load_tv_channels(uuid)
+    pprint.pprint(channel_list)
     if channel_id not in channel_list.keys():
-        raise BadRequest('{channel_id} not in list of channels for tv {uuid}')
+        raise BadRequest(f'{channel_id} not in list of channels for tv {uuid}')
 
     # Setup client
     client = WebOSClient(load_ip(uuid))
