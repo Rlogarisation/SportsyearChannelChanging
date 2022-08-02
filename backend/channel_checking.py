@@ -37,15 +37,21 @@ def obtain_schedule():
 def channel_automation(): 
     currentDateTimeUTC = datetime.utcnow().replace(second=0,microsecond=0).isoformat() + 'Z'
     channel_data = load_schedule()
-
     channel_change_flag = False
+    #remove any outdated fixtures and update on database
     for channel in list(channel_data):
         if currentDateTimeUTC > channel_data[channel]['end']:
             del channel_data[channel]
-        if currentDateTimeUTC is channel_data[channel]['start']:
             channel_change_flag = True
     persist_schedule(channel_data)
 
+    #filter out any channels that have yet to be shown 
+    channel_data = load_schedule()
+    for channel in list(channel_data):
+        if currentDateTimeUTC is channel_data[channel]['start']:
+            channel_change_flag = True
+        if currentDateTimeUTC < channel_data[channel]['start']:
+            del channel_data[channel]
     print('Running Smart Automation, db schedule checked')
 
     db = shelve.open('db\storage')
