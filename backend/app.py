@@ -33,8 +33,11 @@ app.register_blueprint(scan_bp)
 from routes.power import power as power_bp
 app.register_blueprint(power_bp)
 
-from routes.automation import automation as automation_bp
-app.register_blueprint(automation_bp)
+from routes.automation import automation1 as automation1_bp
+app.register_blueprint(automation1_bp)
+
+from routes.automation import automation2 as automation2_bp
+app.register_blueprint(automation2_bp)
 
 from routes.IR import IR as IR_bp
 app.register_blueprint(IR_bp)

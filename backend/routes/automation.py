@@ -18,24 +18,25 @@ def initialiseAutomation():
     scheduled_job = scheduler.add_job(obtain_schedule,trigger1)
     scheduled_job2 = scheduler.add_job(channel_automation,trigger2)
     scheduled_job3 = scheduler.add_job(channel_automation_IR,trigger3)
-    #scheduled_job2.pause()
+    scheduled_job2.pause()
 
-automation = Blueprint('automation', __name__, url_prefix='/automation/')
+automation1 = Blueprint('automation1', __name__, url_prefix='/smart/automation/')
+automation2 = Blueprint('automation2', __name__, url_prefix='/ir/automation/')
 
 """
-Pause Automation Wifi
+Pause Smart Automation
 Method = POST
 """
-@automation.route("/pause", methods=['POST'])
+@automation1.route("/pause", methods=['POST'])
 def pause():
     scheduled_job2.pause()
     return {}
 
 """
-Resume Automation Wifi
+Resume Smart Automation
 Method = POST
 """
-@automation.route("/resume", methods=['POST'])
+@automation1.route("/resume", methods=['POST'])
 def resume():
     scheduled_job2.resume()
     return {}
@@ -44,8 +45,8 @@ def resume():
 Pause Automation IR
 Method = POST
 """
-@automation.route("/pause_IR", methods=['POST'])
-def pause_IR():
+@automation2.route("/pause", methods=['POST'])
+def pause():
     scheduled_job3.pause()
     return {}
 
@@ -53,7 +54,7 @@ def pause_IR():
 Resume Automation IR
 Method = POST
 """
-@automation.route("/resume_IR", methods=['POST'])
+@automation2.route("/resume", methods=['POST'])
 def resume_IR():
     scheduled_job3.resume()
     return {}

@@ -46,15 +46,19 @@ def channel_automation():
             channel_change_flag = True
     persist_schedule(channel_data)
 
-    print('db schedule checked')
+    print('Running Smart Automation, db schedule checked')
 
     db = shelve.open('db\storage')
     tvs = list(db['scan'])
     db.close()
     channel_num_list = []
+    channel_time_list = []
     for channel in channel_data:
-        channel_num_list.append(channel_data[channel]['channel_number'])    
-    print(channel_num_list)
+        channel_num_list.append(channel_data[channel]['channel_number'])
+        channel_time_list.append(channel_data[channel]['start'])
+    print(f'Channel Number: {channel_num_list}')
+    print(f'Fixture UTC Time: {channel_time_list}')
+    print(f'Current UTC Time: {currentDateTimeUTC}')
     print('------------------------------------------------------------------------------')
     if (channel_change_flag is True):
         #case 1: if #channels = #tvs -> just set 1 to 1
@@ -87,13 +91,21 @@ def channel_automation_IR():
         if currentDateTimeUTC is channel_data[channel]['start']:
             channel_change_flag = True
     persist_schedule(channel_data)
+
+    print('Running IR Automation, db schedule checked')
+
     db = shelve.open('db\storage')
     tvs = list(db['scan'])
     db.close()
 
     channel_num_list = []
+    channel_time_list = []
     for channel in channel_data:
-        channel_num_list.append(channel_data[channel]['channel_number'])  
+        channel_num_list.append(channel_data[channel]['channel_number'])
+        channel_time_list.append(channel_data[channel]['start'])
+    print(f'Channel Number: {channel_num_list}')
+    print(f'Fixture UTC Time: {channel_time_list}')
+    print(f'Current UTC Time: {currentDateTimeUTC}')
 
     ir_tvs = ir_load_blaster_data()
     ip_list = []
