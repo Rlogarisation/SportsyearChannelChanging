@@ -21,7 +21,7 @@ def obtain_schedule():
         # print('hello')
         print(fix)
         if (data['entities']['channels']['broadcastingFixture'][fix] == []): continue
-           chan_dic[fix] = {
+        chan_dic[fix] = {
             'channel_name' : data['entities']['channels']['byId'][str(data['entities']['channels']['broadcastingFixture'][fix][0])]['apiCode'],
             'channel_number' : data['entities']['channels']['broadcastingFixture'][fix][0],
             'end' : data['entities']['fixtures']['byId'][fix]['endDateTimeUTC'],    
@@ -29,11 +29,16 @@ def obtain_schedule():
             'start' : data['entities']['fixtures']['byId'][fix]['startDateTimeUTC']    
         }
     print('new fixture')
-    #chan_dic['123456'] ={'channel_name': '7mate',
-     #                                           'channel_number': 10,
-      #                                          'end': '2022-08-02T12:50:00Z',
-       #                                         'ranking': 200,
-        #                                        'start': '2022-08-02T11:12:00Z'} 
+
+    # Update below to test a custom schedule
+    # chan_dic['123456'] = {
+    #     'channel_name': '7mate',
+    #     'channel_number': 10,
+    #     'end': '2022-08-02T12:50:00Z',
+    #     'ranking': 200,
+    #     'start': '2022-08-02T11:12:00Z'
+    # }
+
     ordered_channels_info = dict(OrderedDict(sorted(chan_dic.items(), key=lambda kv: kv[1]['ranking'],reverse=True)))
     #print(ordered_channels_info)
     persist_schedule(ordered_channels_info)
@@ -41,7 +46,7 @@ def obtain_schedule():
     pprint.pprint(ordered_channels_info)
     return ordered_channels_info
 
-#returns a dictionary of channels to be played at the present instance
+# CHANNEL AUTOMATION FOR SMART TVs CHECKS ON TRIGGER
 def channel_automation(): 
     currentDateTimeUTC = datetime.utcnow().replace(second=0,microsecond=0).isoformat() + 'Z'
     channel_data = load_schedule()
@@ -56,7 +61,7 @@ def channel_automation():
     #filter out any channels that have yet to be shown 
     channel_data = load_schedule()
     for channel in list(channel_data):
-        if currentDateTimeUTC is channel_data[channel]['start']:
+        if currentDateTimeUTC == channel_data[channel]['start']:
             channel_change_flag = True
         if currentDateTimeUTC < channel_data[channel]['start']:
             del channel_data[channel]
@@ -81,7 +86,7 @@ def channel_automation():
         if len(channel_num_list) is len(tvs):
             for i in range(len(channel_num_list)):
                  print("case1: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
-                 _set_channel(str(channel_num_list[i]),tvs[i])    
+                 _set_channel(str(channel_num_list[i]),tvs[i])
         #case 2: if #channels < #tvs -> have the channels wrap again 
         elif len(channel_num_list) < len(tvs):
             for i in range(len(tvs)):
@@ -89,17 +94,18 @@ def channel_automation():
                     _set_channel(str(channel_num_list[i-len(channel_num_list)]),tvs[i-len(channel_num_list)])
                  else :
                     print("case 2: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
-                 _set_channel(str(channel_num_list[i]),tvs[i])           
+                 _set_channel(str(channel_num_list[i]),tvs[i])
         #case 3: if #channels > #tvs -> have set channels on tvs and exit loop
         elif len(channel_num_list) > len(tvs):
              for i in range(len(tvs)):
                  print("case 3: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
-                 _set_channel(str(channel_num_list[i]),tvs[i])     
+                 _set_channel(str(channel_num_list[i]),tvs[i])
     db.close()
     if not channel_num_list:
         print("no scheduled channels at this moment (Wifi)")
     return channel_data
 
+# INITIAL CHANNEL AUTOMATION FOR SMART TVs
 def force_channel_automation(): 
     currentDateTimeUTC = datetime.utcnow().replace(second=0,microsecond=0).isoformat() + 'Z'
     channel_data = load_schedule()
@@ -130,7 +136,7 @@ def force_channel_automation():
     if len(channel_num_list) is len(tvs):
         for i in range(len(channel_num_list)):
             print("case1: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
-            _set_channel(str(channel_num_list[i]),tvs[i])    
+            _set_channel(str(channel_num_list[i]),tvs[i])
     #case 2: if #channels < #tvs -> have the channels wrap again 
     elif len(channel_num_list) < len(tvs):
         for i in range(len(tvs)):
@@ -138,15 +144,17 @@ def force_channel_automation():
                 _set_channel(str(channel_num_list[i-len(channel_num_list)]),tvs[i-len(channel_num_list)])
             else :
                 print("case 2: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
-                _set_channel(str(channel_num_list[i]),tvs[i])           
+                _set_channel(str(channel_num_list[i]),tvs[i])
     #case 3: if #channels > #tvs -> have set channels on tvs and exit loop
     elif len(channel_num_list) > len(tvs):
         for i in range(len(tvs)):
             print("case 3: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
-            _set_channel(str(channel_num_list[i]),tvs[i])     
+            _set_channel(str(channel_num_list[i]),tvs[i])
     if not channel_num_list:
         print("no scheduled channels at this moment (Wifi)")
     return channel_data
+
+# CHANNEL AUTOMATION FOR IR CHECKS ON TRIGGER
 def channel_automation_IR():
     currentDateTimeUTC = datetime.utcnow().replace(second=0,microsecond=0).isoformat() + 'Z'
     channel_data = load_schedule()
@@ -217,6 +225,8 @@ def channel_automation_IR():
         print("no scheduled channels at this moment (IR)")
 
     return channel_data
+
+# INITIAL CHANNEL AUTOMATION FOR IR
 def force_channel_automation_IR():
     currentDateTimeUTC = datetime.utcnow().replace(second=0,microsecond=0).isoformat() + 'Z'
     channel_data = load_schedule()
