@@ -88,6 +88,8 @@ def channel_automation():
                  print("case 3: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
                  _set_channel(str(channel_num_list[i]),tvs[i])     
     db.close()
+    if not channel_num_list:
+        print("no scheduled channels at this moment (Wifi)")
     return channel_data
 
 def force_channel_automation(): 
@@ -136,7 +138,6 @@ def force_channel_automation():
             _set_channel(str(channel_num_list[i]),tvs[i])     
     if not channel_num_list:
         print("no scheduled channels at this moment (Wifi)")
-
     return channel_data
 def channel_automation_IR():
     currentDateTimeUTC = datetime.utcnow().replace(second=0,microsecond=0).isoformat() + 'Z'
@@ -203,6 +204,9 @@ def channel_automation_IR():
                 print("case 3: IR signal sent") 
                 _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])   
     db.close()
+    if not channel_num_list:
+        print("no scheduled channels at this moment (IR)")
+
     return channel_data
 def force_channel_automation_IR():
     currentDateTimeUTC = datetime.utcnow().replace(second=0,microsecond=0).isoformat() + 'Z'
