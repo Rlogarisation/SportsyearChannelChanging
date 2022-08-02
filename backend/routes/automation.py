@@ -3,7 +3,7 @@ from flask import Blueprint, request
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.combining import AndTrigger
 from apscheduler.triggers.interval import IntervalTrigger
-from channel_checking import obtain_schedule, channel_automation, channel_automation_IR
+from channel_checking import obtain_schedule, channel_automation, channel_automation_IR, force_channel_automation, force_channel_automation_IR
 
 def initialiseAutomation():
     # Background task scheduler
@@ -39,6 +39,7 @@ Method = POST
 """
 @automation1.route("/resume", methods=['POST'])
 def resume():
+    force_channel_automation()
     scheduled_job2.resume()
     return {}
 
@@ -57,6 +58,7 @@ Method = POST
 """
 @automation2.route("/resume", methods=['POST'])
 def resume_IR():
+    force_channel_automation_IR()
     scheduled_job3.resume()
     return {}
 
