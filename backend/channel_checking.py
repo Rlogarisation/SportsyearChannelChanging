@@ -15,9 +15,13 @@ def obtain_schedule():
     data = r.json()
 
     chan_dic = {}
+    pprint.pprint(data)
     for fix in data['entities']['fixtures']['byId']:
+
         # print('hello')
-        chan_dic[fix] = {
+        print(fix)
+        if (data['entities']['channels']['broadcastingFixture'][fix] == []): continue
+           chan_dic[fix] = {
             'channel_name' : data['entities']['channels']['byId'][str(data['entities']['channels']['broadcastingFixture'][fix][0])]['apiCode'],
             'channel_number' : data['entities']['channels']['broadcastingFixture'][fix][0],
             'end' : data['entities']['fixtures']['byId'][fix]['endDateTimeUTC'],    
@@ -25,7 +29,11 @@ def obtain_schedule():
             'start' : data['entities']['fixtures']['byId'][fix]['startDateTimeUTC']    
         }
     print('new fixture')
-   
+    #chan_dic['123456'] ={'channel_name': '7mate',
+     #                                           'channel_number': 10,
+      #                                          'end': '2022-08-02T12:50:00Z',
+       #                                         'ranking': 200,
+        #                                        'start': '2022-08-02T11:12:00Z'} 
     ordered_channels_info = dict(OrderedDict(sorted(chan_dic.items(), key=lambda kv: kv[1]['ranking'],reverse=True)))
     #print(ordered_channels_info)
     persist_schedule(ordered_channels_info)
@@ -148,19 +156,20 @@ def channel_automation_IR():
         if currentDateTimeUTC > channel_data[channel]['end']:
             del channel_data[channel]
             channel_change_flag = True
+    pprint.pprint(channel_data)
     persist_schedule(channel_data)
 
     #filter out any channels that have yet to be shown 
     channel_data = load_schedule()
     for channel in list(channel_data):
-        if currentDateTimeUTC is channel_data[channel]['start']:
+        if currentDateTimeUTC == channel_data[channel]['start']:
             channel_change_flag = True
         if currentDateTimeUTC < channel_data[channel]['start']:
             del channel_data[channel]
     print('Running IR Automation, db schedule checked')
 
-    db = shelve.open('db\storage')
-    tvs = list(db['scan'])
+    #db = shelve.open('db\storage')
+    #tvs = list(db['scan'])
 
     channel_num_list = []
     channel_start_list = []
@@ -200,10 +209,10 @@ def channel_automation_IR():
                     _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])  
         #case 3: if channels > tvs -> have set channels on tvs and exit loop
         elif len(channel_num_list) > len(ir_tvs):
-             for i in range(len(tvs)):
+             for i in range(len(ir_tvs)):
                 print("case 3: IR signal sent") 
                 _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])   
-    db.close()
+    #db.close()
     if not channel_num_list:
         print("no scheduled channels at this moment (IR)")
 
@@ -225,10 +234,6 @@ def force_channel_automation_IR():
         
     print('db schedule checked for IR')
 
-    db = shelve.open('db\storage')
-    tvs = list(db['scan'])
-    db.close()
-
     channel_num_list = []
     for channel in channel_data:
         channel_num_list.append(channel_data[channel]['channel_number'])  
@@ -241,7 +246,9 @@ def force_channel_automation_IR():
          ip_list.append(ir_tvs[tv]['ip_address'])
          port_list.append(ir_tvs[tv]['port'])   
          type_list.append(ir_tvs[tv]['type'])   
-
+    print(ip_list)
+    print(port_list)
+    print(type_list)
     #case 1: if #channels = #tvs -> just set 1 to 1
     if len(channel_num_list) is len(ir_tvs):
         for i in range(len(channel_num_list)):
@@ -254,11 +261,12 @@ def force_channel_automation_IR():
                 print("case 2.1: IR signal sent") 
                 _ir_set_channel(ip_list[i-len(channel_num_list)], port_list[i-len(channel_num_list)], str(channel_num_list[i-len(channel_num_list)]), type_list[i-len(channel_num_list)])
             else :
-                print("case 2.2: IR signal sent") 
+                print("case 2.2: IR signal sent")
+                print(ip_list[i], port_list[i], channel_num_list[i], type_list[i])
                 _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])  
     #case 3: if channels > tvs -> have set channels on tvs and exit loop
     elif len(channel_num_list) > len(ir_tvs):
-        for i in range(len(tvs)):
+        for i in range(len(ir_tvs)):
             print("case 3: IR signal sent") 
             _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])   
 
