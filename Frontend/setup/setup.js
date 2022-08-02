@@ -312,7 +312,7 @@ const automate_ir_event = () => {
 }
 
 const automate_ir_token = () => {
-  sessionStorage.setItem("isIRAutomated", automateSmartSlider.checked);
+  sessionStorage.setItem("isIRAutomated", automateIRSlider.checked);
 }
 
 remoteSlider.addEventListener("change", get_tvs);

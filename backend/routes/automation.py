@@ -19,6 +19,7 @@ def initialiseAutomation():
     scheduled_job2 = scheduler.add_job(channel_automation,trigger2)
     scheduled_job3 = scheduler.add_job(channel_automation_IR,trigger3)
     scheduled_job2.pause()
+    scheduled_job3.pause()
 
 automation1 = Blueprint('automation1', __name__, url_prefix='/smart/automation/')
 automation2 = Blueprint('automation2', __name__, url_prefix='/ir/automation/')

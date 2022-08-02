@@ -50,14 +50,16 @@ def channel_automation():
 
     db = shelve.open('db\storage')
     tvs = list(db['scan'])
-    db.close()
     channel_num_list = []
-    channel_time_list = []
+    channel_start_list = []
+    channel_end_list = []
     for channel in channel_data:
         channel_num_list.append(channel_data[channel]['channel_number'])
-        channel_time_list.append(channel_data[channel]['start'])
+        channel_start_list.append(channel_data[channel]['start'])
+        channel_end_list.append(channel_data[channel]['end'])
     print(f'Channel Number: {channel_num_list}')
-    print(f'Fixture UTC Time: {channel_time_list}')
+    print(f'Fixture UTC Start Time: {channel_start_list}')
+    print(f'Fixture UTC End Time: {channel_end_list}')
     print(f'Current UTC Time: {currentDateTimeUTC}')
     print('------------------------------------------------------------------------------')
     if (channel_change_flag is True):
@@ -79,6 +81,7 @@ def channel_automation():
              for i in range(len(tvs)):
                  print("case 3: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
                  _set_channel(str(channel_num_list[i]),tvs[i])     
+    db.close()
     return channel_data
 
 def channel_automation_IR():
@@ -96,17 +99,19 @@ def channel_automation_IR():
 
     db = shelve.open('db\storage')
     tvs = list(db['scan'])
-    db.close()
 
     channel_num_list = []
-    channel_time_list = []
+    channel_start_list = []
+    channel_end_list = []
     for channel in channel_data:
         channel_num_list.append(channel_data[channel]['channel_number'])
-        channel_time_list.append(channel_data[channel]['start'])
+        channel_start_list.append(channel_data[channel]['start'])
+        channel_end_list.append(channel_data[channel]['end'])
     print(f'Channel Number: {channel_num_list}')
-    print(f'Fixture UTC Time: {channel_time_list}')
+    print(f'Fixture UTC Start Time: {channel_start_list}')
+    print(f'Fixture UTC End Time: {channel_end_list}')
     print(f'Current UTC Time: {currentDateTimeUTC}')
-
+    print('------------------------------------------------------------------------------')
     ir_tvs = ir_load_blaster_data()
     ip_list = []
     port_list = []
@@ -136,5 +141,5 @@ def channel_automation_IR():
              for i in range(len(tvs)):
                 print("case 3: IR signal sent") 
                 _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])   
-    
-              
+    db.close()
+    return channel_data
