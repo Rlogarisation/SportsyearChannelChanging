@@ -11,7 +11,7 @@ body {
 }
 
 h1 {
-    margin-top: 10%;
+    margin-top: 5%;
     color: var(--primaryGreen);
     text-decoration: underline;
     font-size:44px;
@@ -53,19 +53,93 @@ a {
     align-items: center;
 }
 
-#changeChannelsSection {
-    margin-top: 10%;
+#tvNameSection {
+    border: 3px solid var(--primaryGreen);
+    padding: 10px;
+    border-radius: 15px;
+    margin-bottom: 20px;
+}
+
+#changeChannelList {
+    border: 3px solid var(--primaryGreen);
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#changeChannelSection {
+    display: flex;
+    gap: 15px;
+}
+
+#adjustmentSection input[type=image] {
+    width: 40%;
+    max-width: 100px;
+    height: auto;
+}
+
+#adjustmentSection img {
+    width: 40%;
+    max-width: 100px;
+    height: auto;
+}
+
+#volumeUpButton {
+    transform: rotate(270deg);
+}
+
+#volumeUpButton:active {
+    transform: translateY(4px) rotate(270deg);
+}
+
+#channelIncrementButton {
+    transform: rotate(270deg);
+}
+
+#channelIncrementButton:active {
+    transform: translateY(4px) rotate(270deg);
+}
+
+#volumeDownButton {
+    transform: rotate(90deg);
+}
+
+#volumeDownButton:active {
+    transform: translateY(4px) rotate(90deg);
+}
+
+#channelDecrementButton {
+    transform: rotate(90deg);
+}
+
+#channelDecrementButton:active {
+    transform: translateY(4px) rotate(90deg);
+}
+
+#powerButton:active {
+    transform: translateY(4px);
+}
+
+#muteButton:active {
+    transform: translateY(4px);
+}
+
+#ch {
+    font-size: 10vw;
 }
 
 #adjustmentSection {
-    margin-top: 20%;
+    margin-top: 5%;
     width: 80%;
     display: grid;
-    grid-gap: 5%;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
     justify-items: center;
     align-items: center;
+    border: 5px solid var(--primaryGreen);
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-radius: 65px;
+    max-height: 300px;
 }
 
 table {
@@ -166,6 +240,16 @@ table, td, th {
     }
 }
 
+@media only screen and (min-width: 800px) {
+    #ch {
+        font-size: 80px;
+    }
+
+    #adjustmentSection {
+        max-width: 60%;
+    }
+}
+
 .switch {
     position: relative;
     display: inline-block;
@@ -204,6 +288,28 @@ table, td, th {
     -webkit-transition: .4s;
     transition: .4s;
     border-radius: 50%;
+}
+
+#controlButton {
+    margin-bottom: 40px;
+    width: 110px;
+    height: 50px;
+    text-align: center;
+}
+
+#setupButton {
+    margin-bottom: 40px;
+    width: 110px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
+}
+
+#scheduleButton {
+    width: 110px;
+    height: 50px;
+    text-align: center;
+    line-height: 50px;
 }
 
 input:checked + .slider {

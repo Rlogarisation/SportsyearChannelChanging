@@ -21,30 +21,30 @@
         </ul>
     </div>
     <h1 id="controlTitle">TV Control</h1>
-    <div id="changeChannelsSection">
-        <div>
-            <label for="tv_list">TV: </label>
-            <label name="tv_display" id="tv_display"></label>
-            <button value="Change TV"><a href="../setup/index.html">Change TV</a></button>
-        </div>
+    <div id="tvNameSection">
+        <label>TV Name: </label>
+        <label name="tv_display" id="tv_display"></label>
+        <button id="changeTVButton" value="Change TV" class="smlButton" onclick="location.href='../setup/index.html'">Change TV</button>
+    </div>
+    <div id="changeChannelSection">
         <div id="changeChannelList">
             <label for="channels">Change Channel</label>
             <select name="channels" id="channels"></select>
-            <button onclick="setChannel()">Change</button>
         </div>
+        <button id="changeChannelButton" onclick="setChannel()" class="smlButton">Change Channel</button>
     </div>
     <div id="adjustmentSection">
-        <input type="image" id="volumeUpButton" src="../picture/arrow.png" onclick="volumeIncrement()" alt="volumeUp" height="100%" width="100%" style="transform:rotate(270deg);">
-        <input type="image" id="powerButton" src="../picture/powerButton.png" onclick="power()" alt="powerOnOff" height="100%" width="100%">
-        <input type="image" id="channelIncrementButton" src="../picture/arrow.png" onclick="channelIncrement()" alt="channelUp" height="100%" width="100%" style="transform:rotate(270deg);">
+        <input type="image" id="volumeUpButton" src="../picture/arrowgreen.png" onclick="volumeIncrement()" alt="volumeUp" height="100%" width="100%">
+        <input type="image" id="powerButton" src="../picture/powergreen.png" onclick="power()" alt="powerOnOff" height="100%" width="100%">
+        <input type="image" id="channelIncrementButton" src="../picture/arrowgreen.png" onclick="channelIncrement()" alt="channelUp" height="100%" width="100%">
 
-        <img src="../picture/sound.png" alt="sound" height="100%" width="100%">
+        <img src="../picture/soundblack.png" alt="sound" height="100%" width="100%">
         <div></div>
         <div id="ch">CH</div>
 
-        <input type="image" id="volumeDownButton" src="../picture/arrow.png" onclick="volumeDecrement()" alt="volumeDown" height="100%" width="100%" style="transform:rotate(90deg);">
-        <input type="image" id="muteButton" src="../picture/mute.png" onclick="mute()" alt="mute" height="100%" width="100%">
-        <input type="image" id="channelDecrementButton" src="../picture/arrow.png" onclick="channelDecrement()" alt="channelDown" height="100%" width="100%" style="transform:rotate(90deg);">
+        <input type="image" id="volumeDownButton" src="../picture/arrowgreen.png" onclick="volumeDecrement()" alt="volumeDown" height="100%" width="100%">
+        <input type="image" id="muteButton" src="../picture/mutegreen.png" onclick="mute()" alt="mute" height="100%" width="100%">
+        <input type="image" id="channelDecrementButton" src="../picture/arrowgreen.png" onclick="channelDecrement()" alt="channelDown" height="100%" width="100%">
 
     </div>
     <script src="control.js"></script>
