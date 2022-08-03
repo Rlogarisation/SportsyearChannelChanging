@@ -81,6 +81,9 @@ def channel_automation():
     print(f'Fixture UTC End Time: {channel_end_list}')
     print(f'Current UTC Time: {currentDateTimeUTC}')
     print('------------------------------------------------------------------------------')
+    if not channel_num_list:
+        print("no scheduled channels at this moment (WiFi)")
+        return {}
     if (channel_change_flag is True):
         #case 1: if #channels = #tvs -> just set 1 to 1
         if len(channel_num_list) is len(tvs):
@@ -101,8 +104,6 @@ def channel_automation():
                  print("case 3: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
                  _set_channel(str(channel_num_list[i]),tvs[i])
     db.close()
-    if not channel_num_list:
-        print("no scheduled channels at this moment (Wifi)")
     return channel_data
 
 # INITIAL CHANNEL AUTOMATION FOR SMART TVs
@@ -132,6 +133,9 @@ def force_channel_automation():
     print(channel_num_list)
     print('------------------------------------------------------------------------------')
 
+    if not channel_num_list:
+        print("no scheduled channels at this moment (WiFi)")
+        return {}
     #case 1: if #channels = #tvs -> just set 1 to 1
     if len(channel_num_list) is len(tvs):
         for i in range(len(channel_num_list)):
@@ -150,8 +154,6 @@ def force_channel_automation():
         for i in range(len(tvs)):
             print("case 3: setting tv with uuid: ",tvs[i]," with channel number: ",channel_num_list[i])
             _set_channel(str(channel_num_list[i]),tvs[i])
-    if not channel_num_list:
-        print("no scheduled channels at this moment (Wifi)")
     return channel_data
 
 # CHANNEL AUTOMATION FOR IR CHECKS ON TRIGGER
@@ -176,9 +178,6 @@ def channel_automation_IR():
             del channel_data[channel]
     print('Running IR Automation, db schedule checked')
 
-    #db = shelve.open('db\storage')
-    #tvs = list(db['scan'])
-
     channel_num_list = []
     channel_start_list = []
     channel_end_list = []
@@ -200,6 +199,9 @@ def channel_automation_IR():
          port_list.append(ir_tvs[tv]['port'])   
          type_list.append(ir_tvs[tv]['type'])   
 
+    if not channel_num_list:
+        print("no scheduled channels at this moment (IR)")
+        return {}
     if (channel_change_flag is True):
         #case 1: if #channels = #tvs -> just set 1 to 1
         if len(channel_num_list) is len(ir_tvs):
@@ -220,9 +222,6 @@ def channel_automation_IR():
              for i in range(len(ir_tvs)):
                 print("case 3: IR signal sent") 
                 _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])   
-    #db.close()
-    if not channel_num_list:
-        print("no scheduled channels at this moment (IR)")
 
     return channel_data
 
@@ -259,6 +258,9 @@ def force_channel_automation_IR():
     print(ip_list)
     print(port_list)
     print(type_list)
+    if not channel_num_list:
+        print("no scheduled channels at this moment (IR)")
+        return {}
     #case 1: if #channels = #tvs -> just set 1 to 1
     if len(channel_num_list) is len(ir_tvs):
         for i in range(len(channel_num_list)):
@@ -280,6 +282,4 @@ def force_channel_automation_IR():
             print("case 3: IR signal sent") 
             _ir_set_channel(ip_list[i], port_list[i], channel_num_list[i], type_list[i])   
 
-    if not channel_num_list:
-        print("no scheduled channels at this moment (IR)")
     return {}
